@@ -128,7 +128,7 @@ public class GameManager : MonoBehaviour
     public void HighlightPiece(GameObject clickedObject)
     {
         var sr = clickedObject.GetComponent<SpriteRenderer>();
-        sr.color = Color.yellow;
+        sr.color = Color.red;
     }
 
 }
