@@ -17,11 +17,13 @@ public class GameManager : MonoBehaviour
 
     public Vector2Int boardPosition;
     BoardManager boardManager;
+    Piece[,] board;
+    public int boardSize = 8;
 
     void Start()
     {
         boardManager = FindFirstObjectByType<BoardManager>();
-
+        board = new Piece[boardSize, boardSize];
 
         SetUpPieces();
 
