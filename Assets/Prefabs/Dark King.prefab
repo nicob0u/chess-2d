@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 8597019945932796681}
   - component: {fileID: 4244248006623171013}
+  - component: {fileID: 3792067200694882657}
   - component: {fileID: 1971706997113237966}
-  - component: {fileID: 1132591504324230625}
   m_Layer: 0
   m_Name: Dark King
   m_TagString: Untagged
@@ -89,6 +89,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &3792067200694882657
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4206520061110391171}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3230712403a31bd48bac03a3a2894396, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pieceType: 5
+  pieceColor: 1
 --- !u!61 &1971706997113237966
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -135,15 +149,3 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.875, y: 1}
   m_EdgeRadius: 0
---- !u!114 &1132591504324230625
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4206520061110391171}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce322a7097f0b9d479f7cc6365024429, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 

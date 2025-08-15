@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 272520122121641598}
   - component: {fileID: 6157172442511893774}
+  - component: {fileID: 2506458208430217084}
   - component: {fileID: 7677924551159245725}
-  - component: {fileID: 86933509035331778}
   m_Layer: 0
   m_Name: Dark Knight
   m_TagString: Untagged
@@ -89,6 +89,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &2506458208430217084
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5291063220370433323}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3230712403a31bd48bac03a3a2894396, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pieceType: 2
+  pieceColor: 1
 --- !u!61 &7677924551159245725
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -135,15 +149,3 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.9375, y: 1}
   m_EdgeRadius: 0
---- !u!114 &86933509035331778
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5291063220370433323}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce322a7097f0b9d479f7cc6365024429, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
