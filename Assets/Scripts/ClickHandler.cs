@@ -6,6 +6,9 @@ public class ClickHandler : MonoBehaviour
     Controls controls;
     BoardManager boardManager;
     GameManager gameManager;
+    public bool isPieceClicked = false;
+    public GameObject clickedObject;
+
     void Awake()
     {
         boardManager = FindFirstObjectByType<BoardManager>();
@@ -19,11 +22,13 @@ public class ClickHandler : MonoBehaviour
         controls.Gameplay.Enable();
         controls.Gameplay.Click.performed += OnClick;
     }
+
     void OnDisable()
     {
         controls.Gameplay.Disable();
         controls.Gameplay.Click.performed -= OnClick;
     }
+
     void OnClick(InputAction.CallbackContext context)
     {
         Vector2 mousePos = Mouse.current.position.ReadValue();
@@ -31,25 +36,23 @@ public class ClickHandler : MonoBehaviour
         Vector2 boardPos = new Vector2(Mathf.Floor(worldPos.x), Mathf.Floor(worldPos.y));
 
         RaycastHit2D hit = Physics2D.Raycast(worldPos, Vector2.zero);
-
         if (hit.collider != null)
+
+            clickedObject = hit.collider.gameObject;
+
+
+        if (clickedObject != null && clickedObject.CompareTag("Piece"))
         {
-            GameObject clickedObject = hit.collider.gameObject;
-
-            if (clickedObject.CompareTag("Piece")) { 
-                gameManager.HighlightPiece(clickedObject);
-
-
-                clickedObject.GetComponent<Piece>().GetMoves();
-
-            }
-
-
-            //if (hit.collider.gameObject.CompareTag("Tile"))
-            //   boardManager.HighlightTiles((int)boardPos.x, (int)boardPos.y);
-
+            clickedObject.layer = LayerMask.NameToLayer("Currently Selected");
+            var visualPiece = clickedObject.GetComponent<PieceVisual>();
+            Vector2Int visualPosition = visualPiece.boardPosition;
+            boardManager.HighlightTiles(clickedObject, visualPosition.x, visualPosition.y);
+            Debug.Log($"tryna highlight {visualPosition.x}, {visualPosition.y}");
         }
 
-
+        if (clickedObject != null && clickedObject.layer == LayerMask.NameToLayer("Currently Selected"))
+        {
+            gameManager.HighlightPiece(clickedObject);
+        }
     }
 }

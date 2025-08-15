@@ -149,18 +149,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f834c23fd85dfdc4ea14da0deda493e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lightPawnPrefab: {fileID: 6299545554984008069, guid: bed79a6748e22f7439b44bfa27fa050a, type: 3}
-  darkPawnPrefab: {fileID: 1422891163779164934, guid: 4475c1b163408384bbaa4737f23f35db, type: 3}
-  lightRookPrefab: {fileID: 1261691279798105680, guid: 4d5cbbc7ecb35104a99a5d881f7f32d3, type: 3}
-  darkRookPrefab: {fileID: 5028961016782694676, guid: 3debff69897202d4db1d5ebf3566a697, type: 3}
-  lightKnightPrefab: {fileID: 4397243056308012623, guid: 3a7717ccae9858b459ea27d43da09603, type: 3}
+  lightPawnPrefab: {fileID: 6781130230021753471, guid: bed79a6748e22f7439b44bfa27fa050a, type: 3}
+  darkPawnPrefab: {fileID: 6098918357986654985, guid: 4475c1b163408384bbaa4737f23f35db, type: 3}
+  lightRookPrefab: {fileID: 6875482690264420754, guid: 4d5cbbc7ecb35104a99a5d881f7f32d3, type: 3}
+  darkRookPrefab: {fileID: 4409675641802093613, guid: 3debff69897202d4db1d5ebf3566a697, type: 3}
+  lightKnightPrefab: {fileID: 3193726800652027480, guid: 3a7717ccae9858b459ea27d43da09603, type: 3}
   darkKnightPrefab: {fileID: 5291063220370433323, guid: 4cc46a0d85df83246992bad4ec73c784, type: 3}
-  lightBishopPrefab: {fileID: 164065677749567111, guid: c57a6f08355696040ac4050e3bbd28d1, type: 3}
+  lightBishopPrefab: {fileID: 9085109696973904919, guid: c57a6f08355696040ac4050e3bbd28d1, type: 3}
   darkBishopPrefab: {fileID: 7729687270091327118, guid: 065e30df94277c54ea85c3e8b0896c9f, type: 3}
-  lightQueenPrefab: {fileID: 6883904883232258147, guid: a53095b5bc7c9da4db3e66c6b60e5b47, type: 3}
-  darkQueenPrefab: {fileID: 3026001139646057143, guid: ac4a51162d2f4ed46ba064ae494f6052, type: 3}
-  lightKingPrefab: {fileID: 4808373416283899468, guid: 1901bf99d55f52948a9a113f29d62b5c, type: 3}
+  lightQueenPrefab: {fileID: 5377452389369411854, guid: a53095b5bc7c9da4db3e66c6b60e5b47, type: 3}
+  darkQueenPrefab: {fileID: 2131561709912977364, guid: ac4a51162d2f4ed46ba064ae494f6052, type: 3}
+  lightKingPrefab: {fileID: 7781519126548929760, guid: 1901bf99d55f52948a9a113f29d62b5c, type: 3}
   darkKingPrefab: {fileID: 4206520061110391171, guid: 40848ba8b7e4b6949a77c2d8c87b2ed9, type: 3}
+  boardSize: 8
 --- !u!4 &79977346
 Transform:
   m_ObjectHideFlags: 0
@@ -188,6 +189,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b68a1305af83caf419e9a7559af1568a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isPieceClicked: 0
+  clickedObject: {fileID: 0}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
