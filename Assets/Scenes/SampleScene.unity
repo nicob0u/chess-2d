@@ -189,8 +189,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b68a1305af83caf419e9a7559af1568a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isPieceClicked: 0
-  clickedObject: {fileID: 0}
+  isSelected: 0
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -530,6 +529,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   LightTilePrefab: {fileID: 4313997812723053162, guid: 49e48ba5e754ff940b9bd66eaf860aad, type: 3}
   DarkTilePrefab: {fileID: 5888479437740048162, guid: da874b971e485f447892a720f21a381d, type: 3}
+  isHightlighted: 0
 --- !u!4 &1605022553
 Transform:
   m_ObjectHideFlags: 0

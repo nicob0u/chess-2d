@@ -7,13 +7,18 @@ public class BoardManager : MonoBehaviour
     public GameObject LightTilePrefab;
     public GameObject DarkTilePrefab;
     GameObject tile;
-    Board board;
+    public Board board;
     private ClickHandler handler;
+    public bool isHightlighted;
 
-    void Start()
+    void Awake()
     {
         board = new Board();
-
+        board.Init();
+    }
+    void Start()
+    {
+;
         tileObjects = new GameObject[8, 8];
         CreateBoard();
 
@@ -53,7 +58,6 @@ public class BoardManager : MonoBehaviour
         if (board == null)
             Debug.Log("Board null");
 
-
         var piece = clickedObject.GetComponent<PieceVisual>().corePiece;
 
         if (piece == null)
@@ -61,14 +65,22 @@ public class BoardManager : MonoBehaviour
 
         List<Vector2Int> allowedMoves = piece.GetMoves(board.pieces, x, y);
 
-
         foreach (Vector2Int move in allowedMoves)
         {
             var sr = tileObjects[move.x, move.y].GetComponent<SpriteRenderer>();
-            if (tile.CompareTag("Tile"))
+
+            sr.color = Color.yellow;
+        }
+    }
+
+    public void ClearHighlights()
+    {
+        for (int x = 0; x < 8; x++)
+        {
+            for (int y = 0; y < 8; y++)
             {
-                sr.color = Color.yellow;
-                //Debug.Log($"Tile {x}, {y} highlighted.");
+                var sr = tileObjects[x, y].GetComponent<SpriteRenderer>();
+                sr.color = Color.white;
             }
         }
     }

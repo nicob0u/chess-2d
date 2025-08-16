@@ -16,9 +16,7 @@ public class PawnPiece : PieceBase
             if (board[x, j] == null)
             {
                 var allowedMove = new Vector2Int(x, j);
-                Debug.Log($"highlighed moves are at {allowedMove}");
                 moves.Add(allowedMove);
-
             }
             
 

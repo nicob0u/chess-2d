@@ -17,7 +17,7 @@ public class GameManager : MonoBehaviour
     public GameObject darkKingPrefab;
 
     PieceBase _corePiece;
-    BoardManager _boardManager;
+    BoardManager boardManager;
 
     public int boardSize = 8;
 
@@ -25,8 +25,8 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        board = new Board();
-        board.Init();
+        boardManager = FindFirstObjectByType<BoardManager>();
+        board = boardManager.board;
 
         for (int i = 0; i < boardSize; i++)
         {
