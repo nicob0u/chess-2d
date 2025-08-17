@@ -1,29 +1,38 @@
 using UnityEngine;
 using System.Collections.Generic;
+
 public class KnightPiece : PieceBase
 {
     public KnightPiece(PieceColor color) : base(color)
     {
     }
+
     public override List<Vector2Int> GetMoves(PieceBase[,] board, int x, int y)
     {
-        
         var moves = new List<Vector2Int>();
 
-        for (int j = y; j < y + 3; j++)
+        for (int i = x - 2; i < x + 3; i++)
         {
-
-            if (board[x, j] == null)
+            for (int j = y - 2; j < y + 3; j++)
             {
-                var allowedMove = new Vector2Int(x, j);
-                Debug.Log($"highlighed moves are at {allowedMove}");
-                moves.Add(allowedMove);
+                if (i < 0 || i > 7 || j < 0 || j > 7) continue;
+                if (board[i, j] == null)
+                {
+                    if (i == x - 1 || i == x + 1)
+                    {
+                        if (j == y - 1 || j == y + 1 || j == y) continue;
+                        moves.Add(new Vector2Int(i, j));
+                    }
 
+                    if (i == x - 2 || i == x + 2)
+                    {
+                        if (j == y - 2 || j == y + 2 || j == y) continue;
+                        moves.Add(new Vector2Int(i, j));
+                    }
+                }
             }
-            
-
         }
+        
         return moves;
     }
-
 }

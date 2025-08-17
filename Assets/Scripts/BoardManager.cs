@@ -67,6 +67,7 @@ public class BoardManager : MonoBehaviour
 
         foreach (Vector2Int move in allowedMoves)
         {
+            
             var sr = tileObjects[move.x, move.y].GetComponent<SpriteRenderer>();
 
             sr.color = Color.yellow;

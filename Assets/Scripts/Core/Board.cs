@@ -20,20 +20,22 @@ public class Board
                 if ((j == 0 || j == 7) && (i == 0 || i == 7))
                 {
                     PieceColor color = (j == 0) ? PieceColor.White : PieceColor.Black;
-
                     pieces[i, j] = new RookPiece(color);
                 }
 
                 if ((j == 0 || j == 7) && (i == 1 || i == 6))
                 {
+                   
                     PieceColor color = (j == 0) ? PieceColor.White : PieceColor.Black;
-                    pieces[i, j] = new BishopPiece(color);
+                    pieces[i, j] = new KnightPiece(color);
                 }
 
                 if ((j == 0 || j == 7) && (i == 2 || i == 5))
                 {
+                    
                     PieceColor color = (j == 0) ? PieceColor.White : PieceColor.Black;
-                    pieces[i, j] = new KnightPiece(color);
+                    pieces[i, j] = new BishopPiece(color);
+                    
                 }
 
                 if ((j == 0 || j == 7) && (i == 4))
@@ -49,5 +51,14 @@ public class Board
                 }
             }
         }
+    }
+
+    public void MovePiece(Vector2Int from, Vector2Int to)
+    {
+        var piece = pieces[from.x, from.y];
+        if (piece == null) return;
+        
+       pieces[to.x, to.y] = piece;
+       pieces[from.x, from.y] = null;
     }
 }

@@ -11,19 +11,18 @@ public class KingPiece : PieceBase
     {
         var moves = new List<Vector2Int>();
 
-        for (int j = y; j < y + 3; j++)
+        for (int i = x - 1; i < x + 2; i++)
         {
-
-            if (board[x, j] == null)
+            for (int j = y - 1; j < y + 2; j++)
             {
-                var allowedMove = new Vector2Int(x, j);
-                Debug.Log($"highlighed moves are at {allowedMove}");
-                moves.Add(allowedMove);
-
+                if (i < 0 || i > 7 || j < 0 || j > 7) continue;
+                if (board[i, j] == null)
+                {
+                   moves.Add(new Vector2Int(i, j));
+                }
             }
-            
-
         }
+
         return moves;
     }
 }

@@ -22,9 +22,9 @@ public class ClickHandler : MonoBehaviour
     void Start()
     {
         boardManager = FindFirstObjectByType<BoardManager>();
-        board = boardManager.board; 
-
+        board = boardManager.board;
     }
+
     void OnEnable()
     {
         controls.Gameplay.Enable();
@@ -39,47 +39,22 @@ public class ClickHandler : MonoBehaviour
 
     void OnClick(InputAction.CallbackContext context)
     {
-       
+        // read value from mouse pointer position and convert to world point
         Vector2 mousePos = Mouse.current.position.ReadValue();
         Vector2 worldPos = Camera.main.ScreenToWorldPoint(mousePos);
 
+        // cast a ray to get the collider for chosen object
         RaycastHit2D hit = Physics2D.Raycast(worldPos, Vector2.zero);
-
-        GameObject newSelected = hit.collider != null ? hit.collider.gameObject : null;
-
+        GameObject newSelected = hit.collider?.gameObject;
         if (newSelected != null && newSelected.CompareTag("Piece"))
         {
             ToggleSelection(newSelected);
             return;
         }
 
-        if (clickedObject == null) 
+        if (clickedObject == null)
             return;
-
-        var pieceVisual = clickedObject.GetComponent<PieceVisual>();
-
-        var piece = pieceVisual.corePiece;
-
-        List<Vector2Int> allowedMoves =
-            piece.GetMoves(board.pieces, pieceVisual.boardPosition.x, pieceVisual.boardPosition.y);
-
-        Vector2 mouseWorldPos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-        Vector2Int mouseGridPos = new Vector2Int(
-            Mathf.FloorToInt(mouseWorldPos.x),
-            Mathf.FloorToInt(mouseWorldPos.y)
-        );
-
-        
-        if (!allowedMoves.Contains(mouseGridPos))
-            return;
-        clickedObject.transform.position = new Vector3(mouseGridPos.x, mouseGridPos.y, clickedObject.transform.position.z);
-        pieceVisual.boardPosition = mouseGridPos;
-
-        var sr = clickedObject.GetComponent<SpriteRenderer>();
-        if (sr != null) sr.color = Color.white;
-
-        clickedObject = null;
-        boardManager.ClearHighlights();
+        ApplyVisualMovement();
     }
 
     void ToggleSelection(GameObject newSelected)
@@ -111,5 +86,38 @@ public class ClickHandler : MonoBehaviour
             Vector2Int visualPosition = visualPiece.boardPosition;
             boardManager.HighlightTiles(newSelected, visualPosition.x, visualPosition.y);
         }
+    }
+
+    void ApplyVisualMovement()
+    {
+        var pieceVisual = clickedObject.GetComponent<PieceVisual>();
+
+        var piece = pieceVisual.corePiece;
+
+        List<Vector2Int> allowedMoves =
+            piece.GetMoves(board.pieces, pieceVisual.boardPosition.x, pieceVisual.boardPosition.y);
+
+        Vector2 mouseWorldPos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+        Vector2Int mouseGridPos = new Vector2Int(
+            Mathf.FloorToInt(mouseWorldPos.x),
+            Mathf.FloorToInt(mouseWorldPos.y)
+        );
+
+
+        if (!allowedMoves.Contains(mouseGridPos))
+            return;
+        // move from --> to
+        boardManager.board.MovePiece(pieceVisual.boardPosition, mouseGridPos);
+
+        // move element visually
+        clickedObject.transform.position =
+            new Vector3(mouseGridPos.x, mouseGridPos.y, clickedObject.transform.position.z);
+        pieceVisual.boardPosition = mouseGridPos;
+        // clear previous position visually
+        var sr = clickedObject.GetComponent<SpriteRenderer>();
+        if (sr != null) sr.color = Color.white;
+
+        clickedObject = null;
+        boardManager.ClearHighlights();
     }
 }
