@@ -1,79 +1,146 @@
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class GameManager : MonoBehaviour
 {
-    public GameObject lightPawnPrefab;
-    public GameObject darkPawnPrefab;
-    public GameObject lightRookPrefab;
-    public GameObject darkRookPrefab;
-    public GameObject lightKnightPrefab;
-    public GameObject darkKnightPrefab;
-    public GameObject lightBishopPrefab;
-    public GameObject darkBishopPrefab;
-    public GameObject lightQueenPrefab;
-    public GameObject darkQueenPrefab;
-    public GameObject lightKingPrefab;
-    public GameObject darkKingPrefab;
+    // private PieceVisual pieceVisual;
 
-    PieceBase _corePiece;
-    BoardManager boardManager;
-
-    public int boardSize = 8;
-
+    BoardVisuals boardVisuals;
+    public List<GameObject> pieceVisuals;
+    public bool isWhiteTurn;
+    PieceColor pieceColor;
     Board board;
+    public Tiles tiles;
+    public static GameObject clickedObject;
+    
+    // private PieceBase currentPlayer;
+    void Awake()
+    {
+        board = new Board();
+        board.Init();
+        boardVisuals = FindFirstObjectByType<BoardVisuals>();
+        pieceVisuals = new List<GameObject>();
+        tiles = FindFirstObjectByType<Tiles>();
+        pieceColor = PieceColor.White;
+    }
 
     void Start()
     {
-        boardManager = FindFirstObjectByType<BoardManager>();
-        board = boardManager.board;
-
-        for (int i = 0; i < boardSize; i++)
-        {
-            for (int j = 0; j < boardSize; j++)
-            {
-                _corePiece = board.pieces[i, j];
-                if (_corePiece != null)
-                {
-                    SpawnPiece(i, j, _corePiece);
-                }
-            }
-        }
+        boardVisuals.SpawnPieces(board);
+        tiles.CreateTiles();
     }
 
-    void SpawnPiece(int x, int y, PieceBase corePiece)
+    public void ApplyMovement()
     {
-        GameObject prefab = null;
+      
+        var pieceVisual = clickedObject.GetComponent<PieceVisual>();
 
-        if (corePiece is PawnPiece)
-            prefab = (corePiece.Color == PieceColor.White) ? lightPawnPrefab : darkPawnPrefab;
-        else if (corePiece is RookPiece)
-            prefab = (corePiece.Color == PieceColor.White) ? lightRookPrefab : darkRookPrefab;
-        else if (corePiece is KnightPiece)
-            prefab = (corePiece.Color == PieceColor.White) ? lightKnightPrefab : darkKnightPrefab;
-        else if (corePiece is BishopPiece)
-            prefab = (corePiece.Color == PieceColor.White) ? lightBishopPrefab : darkBishopPrefab;
-        else if (corePiece is QueenPiece)
-            prefab = (corePiece.Color == PieceColor.White) ? lightQueenPrefab : darkQueenPrefab;
-        else if (corePiece is KingPiece)
-            prefab = (corePiece.Color == PieceColor.White) ? lightKingPrefab : darkKingPrefab;
+        var piece = pieceVisual.corePiece;
 
-        if (prefab != null)
-        {
-            Vector2 pos = new Vector2(x, y);
-            GameObject visualPiece = Instantiate(prefab, pos, Quaternion.identity);
-            var visual = visualPiece.GetComponent<PieceVisual>();
+        List<Vector2Int> allowedMoves =
+            piece.GetMoves(board.pieces, pieceVisual.boardPosition.x, pieceVisual.boardPosition.y);
+
+        Vector2 mouseWorldPos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+        Vector2Int mouseGridPos = new Vector2Int(
+            Mathf.FloorToInt(mouseWorldPos.x),
+            Mathf.FloorToInt(mouseWorldPos.y)
+        );
+
+
+        if (!allowedMoves.Contains(mouseGridPos))
+            return;
+        // move from --> to
+        board.MovePiece(pieceVisual.boardPosition, mouseGridPos);
+        
+        // move piece visually
+        boardVisuals.ApplyVisualMovement(clickedObject, pieceVisual, mouseGridPos);
+        EndTurn(pieceVisual.corePiece.Color);
+        
+
+    }
+
+    public void AssignPrefabsToPieces(GameObject prefab, PieceBase corePiece, int x, int y, GameObject visualPiece, PieceVisual visual)
+    {
+        
             visual.corePiece = corePiece;
             board.pieces[x, y] = visual.corePiece;
             visual.boardPosition = new Vector2Int(x, y);
 
             visualPiece.tag = "Piece";
-        }
+            pieceVisuals.Add(visualPiece);
+            
+        
     }
 
-    public void HighlightPiece(GameObject clickedObject)
+    public void EndTurn(PieceColor color)
     {
-        var sr = clickedObject.GetComponent<SpriteRenderer>();
-        sr.color = Color.yellow;
+        if (color == PieceColor.White)
+        {
+            pieceColor = PieceColor.Black;
+        }
+        else 
+            pieceColor = PieceColor.White;
+    }
+    public void SetTurn(GameObject pieceVisual)
+    {
+        if (pieceColor == PieceColor.White)
+        {
+            Debug.Log("white piece seleceted");
+            Debug.Log(pieceVisuals.Count);
+            foreach (GameObject piece in pieceVisuals)
+            {
+                var pieceCollider = piece.GetComponent<BoxCollider2D>();
+
+                if (piece.GetComponent<PieceVisual>().corePiece.Color == PieceColor.Black)
+                    pieceCollider.enabled = false;
+
+                else
+                    pieceCollider.enabled = true;
+            }
+        }
+        else
+        {
+            foreach (GameObject piece in pieceVisuals)
+            {
+                var pieceCollider = piece.GetComponent<BoxCollider2D>();
+
+                if (piece.GetComponent<PieceVisual>().corePiece.Color == PieceColor.White)
+                    pieceCollider.enabled = false;
+                else
+                    pieceCollider.enabled = true;
+            }
+        }
+    }
+     public void ToggleSelection(GameObject newSelected)
+    {
+        Debug.Log("Toggle Selection");
+
+        if (clickedObject == newSelected)
+        {
+            var sr = clickedObject.GetComponent<SpriteRenderer>();
+            sr.color = Color.white;
+            clickedObject = null;
+            tiles.ClearHighlights();
+        }
+
+        else
+        {
+            if (clickedObject != null)
+            {
+                clickedObject.GetComponent<SpriteRenderer>().color = Color.white;
+            }
+
+            tiles.ClearHighlights();
+
+            clickedObject = newSelected;
+            var sr = clickedObject.GetComponent<SpriteRenderer>();
+            sr.color = Color.yellow;
+
+
+            var visualPiece = newSelected.GetComponent<PieceVisual>();
+            Vector2Int visualPosition = visualPiece.boardPosition;
+            tiles.HighlightTiles(newSelected, visualPosition.x, visualPosition.y, board);
+        }
     }
 }

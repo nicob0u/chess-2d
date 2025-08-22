@@ -1,31 +1,25 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
-public class BoardManager : MonoBehaviour
+public class Tiles : MonoBehaviour
 {
     GameObject[,] tileObjects;
     public GameObject LightTilePrefab;
     public GameObject DarkTilePrefab;
     GameObject tile;
-    public Board board;
     private ClickHandler handler;
-    public bool isHightlighted;
+    BoardVisuals boardVisuals;
+    
 
-    void Awake()
-    {
-        board = new Board();
-        board.Init();
-    }
     void Start()
     {
-;
+        boardVisuals = FindFirstObjectByType<BoardVisuals>();
         tileObjects = new GameObject[8, 8];
-        CreateBoard();
-
         handler = FindFirstObjectByType<ClickHandler>();
     }
 
-    void CreateBoard()
+    public void CreateTiles()
     {
         for (int x = 0; x < 8; x++)
         {
@@ -45,29 +39,32 @@ public class BoardManager : MonoBehaviour
 
                 tile.transform.SetParent(this.transform);
                 tile.name = $"tile({x},{y})";
-
+                
                 tileObjects[x, y] = tile;
             }
         }
     }
 
-    public void HighlightTiles(GameObject clickedObject, int x, int y)
-    {
-        if (tile == null)
-            Debug.Log("Tile null");
-        if (board == null)
-            Debug.Log("Board null");
 
+    public void HighlightTiles(GameObject clickedObject, int x, int y, Board board)
+    {
         var piece = clickedObject.GetComponent<PieceVisual>().corePiece;
 
         if (piece == null)
             Debug.Log("Piece null");
+        if (board == null)
+        {
+            Debug.Log("Board null");
+        }
 
         List<Vector2Int> allowedMoves = piece.GetMoves(board.pieces, x, y);
+        if (board.pieces == null)
+        {
+            Debug.Log("No Pieces");
+        }
 
         foreach (Vector2Int move in allowedMoves)
         {
-            
             var sr = tileObjects[move.x, move.y].GetComponent<SpriteRenderer>();
 
             sr.color = Color.yellow;

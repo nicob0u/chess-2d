@@ -19,6 +19,7 @@ public class PawnPiece : PieceBase
                 {
                     if (board[x, j] == null)
                     {
+                        if (board[x, j] != null) break;
                         var allowedMove = new Vector2Int(x, j);
                         moves.Add(allowedMove);
                     }
@@ -46,6 +47,7 @@ public class PawnPiece : PieceBase
                 {
                     if (board[x, j] == null)
                     {
+                        if (board[x, j] != null) break;
                         var allowedMove = new Vector2Int(x, j);
                         moves.Add(allowedMove);
                     }

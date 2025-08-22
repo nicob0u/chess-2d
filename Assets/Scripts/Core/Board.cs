@@ -2,7 +2,13 @@ using UnityEngine;
 
 public class Board
 {
-    public PieceBase[,] pieces = new PieceBase[8, 8];
+    public PieceBase[,] pieces;
+    private int size;
+    public Board(int size = 8)
+    {
+        this.size = size;
+        pieces = new PieceBase[size, size]; 
+    }
 
     public void Init()
     {

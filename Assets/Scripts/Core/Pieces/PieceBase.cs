@@ -1,17 +1,20 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public enum PieceColor { White, Black }
-public abstract class PieceBase 
+public enum PieceColor
 {
-    public PieceColor Color {get; private set;}
-    public abstract List<Vector2Int> GetMoves(PieceBase[,] board, int x, int y);
+    White,
+    Black
+}
 
+public abstract class PieceBase
+{
+    public PieceColor Color { get;  set; }
+    public abstract List<Vector2Int> GetMoves(PieceBase[,] board, int x, int y);
+    public bool isWhiteTurn;
     public PieceBase(PieceColor color)
     {
         Color = color;
     }
-   
-
 
 }
