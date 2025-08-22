@@ -5,13 +5,11 @@ using UnityEngine.InputSystem;
 public class ClickHandler : MonoBehaviour
 {
     Controls controls;
-    BoardVisuals boardVisuals;
     private SpriteRenderer pieceSpriteRenderer;
     private GameManager gameManager;
 
     void Awake()
     {
-        boardVisuals = FindFirstObjectByType<BoardVisuals>();
         gameManager = FindFirstObjectByType<GameManager>();
         controls = new Controls();
     }
@@ -38,10 +36,10 @@ public class ClickHandler : MonoBehaviour
         RaycastHit2D hit = Physics2D.Raycast(worldPos, Vector2.zero);
         GameObject newSelected = hit.collider?.gameObject;
         var piece = newSelected?.GetComponent<PieceVisual>().gameObject;
-        // if (piece != null)
-        // {
-        //     gameManager.SetTurn(piece);
-        // }
+        if (piece != null)
+        {
+            gameManager.SetTurn(piece);
+        }
 
         if (newSelected != null && newSelected.CompareTag("Piece"))
         {

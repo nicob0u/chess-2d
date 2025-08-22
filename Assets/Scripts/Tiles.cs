@@ -8,15 +8,10 @@ public class Tiles : MonoBehaviour
     public GameObject LightTilePrefab;
     public GameObject DarkTilePrefab;
     GameObject tile;
-    private ClickHandler handler;
-    BoardVisuals boardVisuals;
-    
 
     void Start()
     {
-        boardVisuals = FindFirstObjectByType<BoardVisuals>();
         tileObjects = new GameObject[8, 8];
-        handler = FindFirstObjectByType<ClickHandler>();
     }
 
     public void CreateTiles()

@@ -4,17 +4,13 @@ using UnityEngine.InputSystem;
 
 public class GameManager : MonoBehaviour
 {
-    // private PieceVisual pieceVisual;
-
     BoardVisuals boardVisuals;
     public List<GameObject> pieceVisuals;
-    public bool isWhiteTurn;
     PieceColor pieceColor;
     Board board;
     public Tiles tiles;
     public static GameObject clickedObject;
     
-    // private PieceBase currentPlayer;
     void Awake()
     {
         board = new Board();
@@ -22,18 +18,17 @@ public class GameManager : MonoBehaviour
         boardVisuals = FindFirstObjectByType<BoardVisuals>();
         pieceVisuals = new List<GameObject>();
         tiles = FindFirstObjectByType<Tiles>();
-        pieceColor = PieceColor.White;
     }
 
     void Start()
     {
         boardVisuals.SpawnPieces(board);
         tiles.CreateTiles();
+        EnableWhitePiecesOnly();
     }
 
     public void ApplyMovement()
     {
-      
         var pieceVisual = clickedObject.GetComponent<PieceVisual>();
 
         var piece = pieceVisual.corePiece;
@@ -52,42 +47,45 @@ public class GameManager : MonoBehaviour
             return;
         // move from --> to
         board.MovePiece(pieceVisual.boardPosition, mouseGridPos);
-        
+
         // move piece visually
         boardVisuals.ApplyVisualMovement(clickedObject, pieceVisual, mouseGridPos);
         EndTurn(pieceVisual.corePiece.Color);
-        
-
+        SetTurn(pieceVisual.gameObject);
     }
 
-    public void AssignPrefabsToPieces(GameObject prefab, PieceBase corePiece, int x, int y, GameObject visualPiece, PieceVisual visual)
+    public void AssignPrefabsToPieces(GameObject prefab, PieceBase corePiece, int x, int y, GameObject visualPiece,
+        PieceVisual visual)
     {
-        
-            visual.corePiece = corePiece;
-            board.pieces[x, y] = visual.corePiece;
-            visual.boardPosition = new Vector2Int(x, y);
+        visual.corePiece = corePiece;
+        board.pieces[x, y] = visual.corePiece;
+        visual.boardPosition = new Vector2Int(x, y);
 
-            visualPiece.tag = "Piece";
-            pieceVisuals.Add(visualPiece);
-            
-        
+        visualPiece.tag = "Piece";
+        pieceVisuals.Add(visualPiece);
     }
 
     public void EndTurn(PieceColor color)
     {
         if (color == PieceColor.White)
         {
+            Debug.Log("White's turn is over, switching to black.");
             pieceColor = PieceColor.Black;
         }
-        else 
+        else
+        {
+            Debug.Log("Black's turn is over, switching to white.");
             pieceColor = PieceColor.White;
+        }
+            
     }
+
     public void SetTurn(GameObject pieceVisual)
     {
         if (pieceColor == PieceColor.White)
         {
-            Debug.Log("white piece seleceted");
             Debug.Log(pieceVisuals.Count);
+            
             foreach (GameObject piece in pieceVisuals)
             {
                 var pieceCollider = piece.GetComponent<BoxCollider2D>();
@@ -112,7 +110,21 @@ public class GameManager : MonoBehaviour
             }
         }
     }
-     public void ToggleSelection(GameObject newSelected)
+    void EnableWhitePiecesOnly()
+    {
+        foreach (GameObject piece in pieceVisuals)
+        {
+            var pieceCollider = piece.GetComponent<BoxCollider2D>();
+
+            if (piece.GetComponent<PieceVisual>().corePiece.Color == PieceColor.Black)
+                pieceCollider.enabled = false;
+
+            else
+                pieceCollider.enabled = true;
+        }
+    }
+
+    public void ToggleSelection(GameObject newSelected)
     {
         Debug.Log("Toggle Selection");
 
@@ -143,4 +155,6 @@ public class GameManager : MonoBehaviour
             tiles.HighlightTiles(newSelected, visualPosition.x, visualPosition.y, board);
         }
     }
+
+   
 }

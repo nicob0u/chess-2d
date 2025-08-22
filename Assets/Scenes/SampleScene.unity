@@ -218,7 +218,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pieceVisuals: []
-  isWhiteTurn: 1
   tiles: {fileID: 0}
 --- !u!1 &519420028
 GameObject:
