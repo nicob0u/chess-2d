@@ -9,16 +9,20 @@ public class BishopPiece : PieceBase
 
     public override List<Vector2Int> GetMoves(PieceBase[,] board, int x, int y)
     {
-      
         var moves = new List<Vector2Int>();
-        
+
         // right up
         int i = x + 1;
         int j = y + 1;
         while (i < 8 && j < 8)
         {
-            if (board[i, j] != null)
+            if ((board[i, j] != null && board[i, j].Color == Color) || board[i, j] is KingPiece)
                 break;
+            if (board[i, j] != null && board[i, j].Color != Color)
+            {
+                moves.Add(new Vector2Int(i, j));
+                break;
+            }
 
             moves.Add(new Vector2Int(i, j));
             i++;
@@ -26,12 +30,17 @@ public class BishopPiece : PieceBase
         }
 
         // right down 
-         i = x + 1;
-         j = y - 1;
+        i = x + 1;
+        j = y - 1;
         while (i < 8 && j >= 0)
         {
-            if (board[i, j] != null)
+            if ((board[i, j] != null && board[i, j].Color == Color) || board[i, j] is KingPiece)
                 break;
+            if (board[i, j] != null && board[i, j].Color != Color)
+            {
+                moves.Add(new Vector2Int(i, j));
+                break;
+            }
 
             moves.Add(new Vector2Int(i, j));
             i++;
@@ -43,8 +52,13 @@ public class BishopPiece : PieceBase
         j = y + 1;
         while (i >= 0 && j < 8)
         {
-            if (board[i, j] != null)
+            if ((board[i, j] != null && board[i, j].Color == Color) || board[i, j] is KingPiece)
                 break;
+            if (board[i, j] != null && board[i, j].Color != Color)
+            {
+                moves.Add(new Vector2Int(i, j));
+                break;
+            }
 
             moves.Add(new Vector2Int(i, j));
             i--;
@@ -56,8 +70,13 @@ public class BishopPiece : PieceBase
         j = y - 1;
         while (i >= 0 && j >= 0)
         {
-            if (board[i, j] != null)
+            if ((board[i, j] != null && board[i, j].Color == Color) || board[i, j] is KingPiece)
                 break;
+            if (board[i, j] != null && board[i, j].Color != Color)
+            {
+                moves.Add(new Vector2Int(i, j));
+                break;
+            }
 
             moves.Add(new Vector2Int(i, j));
             i--;

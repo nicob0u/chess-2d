@@ -70,7 +70,7 @@ public class BoardVisuals : MonoBehaviour
             Vector2 pos = new Vector2(x, y);
             GameObject visualPiece = Instantiate(prefab, pos, Quaternion.identity);
             var visual = visualPiece.GetComponent<PieceVisual>();
-            gameManager.AssignPrefabsToPieces(prefab, corePiece, x, y, visualPiece, visual);
+            gameManager.AssignPrefabsToPieces(corePiece, x, y, visualPiece, visual);
             gameManager.pieceToGameObject[_corePiece] = visualPiece;
             
             

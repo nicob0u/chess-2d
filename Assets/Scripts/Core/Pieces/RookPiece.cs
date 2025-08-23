@@ -14,7 +14,12 @@ public class RookPiece : PieceBase
         // left
         for (int i = x + 1; i < 8; i++)
         {
-            if (board[i, y] != null) break;
+            if ((board[i, y] != null && board[i, y].Color == Color) || board[i, y] is KingPiece) break;
+            if (board[i, y] != null && board[i, y].Color != Color)
+            {
+                moves.Add(new Vector2Int(i, y));
+                break;
+            }
 
             var allowedMove = new Vector2Int(i, y);
             moves.Add(allowedMove);
@@ -23,7 +28,12 @@ public class RookPiece : PieceBase
         // right
         for (int i = x - 1; i >= 0; i--)
         {
-            if (board[i, y] != null) break;
+            if ((board[i, y] != null && board[i, y].Color == Color) || board[i, y] is KingPiece) break;
+            if (board[i, y] != null && board[i, y].Color != Color)
+            {
+                moves.Add(new Vector2Int(i, y));
+                break;
+            }
 
             var allowedMove = new Vector2Int(i, y);
             moves.Add(allowedMove);
@@ -32,7 +42,12 @@ public class RookPiece : PieceBase
         // up
         for (int j = y + 1; j < 8; j++)
         {
-            if (board[x, j] != null) break;
+            if ((board[x, j] != null && board[x, j].Color == Color) || board[x, j] is KingPiece) break;
+            if (board[x, j] != null && board[x, j].Color != Color)
+            {
+                moves.Add(new Vector2Int(x, j));
+                break;
+            }
 
             var allowedMove = new Vector2Int(x, j);
             moves.Add(allowedMove);
@@ -41,7 +56,12 @@ public class RookPiece : PieceBase
         // down
         for (int j = y - 1; j >= 0; j--)
         {
-            if (board[x, j] != null) break;
+            if ((board[x, j] != null && board[x, j].Color == Color) || board[x, j] is KingPiece) break;
+            if (board[x, j] != null && board[x, j].Color != Color)
+            {
+                moves.Add(new Vector2Int(x, j));
+                break;
+            }
 
             var allowedMove = new Vector2Int(x, j);
             moves.Add(allowedMove);

@@ -17,9 +17,10 @@ public class PawnPiece : PieceBase
             {
                 for (int j = y + 1; j < y + 3; j++)
                 {
+                    if (board[x, j] != null) break;
+
                     if (board[x, j] == null)
                     {
-                        if (board[x, j] != null) break;
                         var allowedMove = new Vector2Int(x, j);
                         moves.Add(allowedMove);
                     }
@@ -37,9 +38,13 @@ public class PawnPiece : PieceBase
                 }
             }
 
-            if (x - 1 >= 0 && y + 1 < 8 && board[x - 1, y + 1] != null && board[x - 1, y + 1].Color == PieceColor.Black )
+            if (x - 1 >= 0 && y + 1 < 8 && board[x - 1, y + 1] != null &&
+                board[x - 1, y + 1].Color == PieceColor.Black &&
+                !(board[x - 1, y + 1] is KingPiece))
                 moves.Add(new Vector2Int(x - 1, y + 1));
-            if (x + 1 < 8 && y + 1 < 8 && board[x + 1, y + 1] != null && board[x + 1, y + 1].Color == PieceColor.Black )
+            if (x + 1 < 8 && y + 1 < 8 && board[x + 1, y + 1] != null &&
+                board[x + 1, y + 1].Color == PieceColor.Black &&
+                !(board[x + 1, y + 1] is KingPiece))
                 moves.Add(new Vector2Int(x + 1, y + 1));
         }
 
@@ -50,9 +55,10 @@ public class PawnPiece : PieceBase
             {
                 for (int j = y - 1; j > y - 3; j--)
                 {
+                    if (board[x, j] != null) break;
+
                     if (board[x, j] == null)
                     {
-                        if (board[x, j] != null) break;
                         var allowedMove = new Vector2Int(x, j);
                         moves.Add(allowedMove);
                     }
@@ -70,17 +76,15 @@ public class PawnPiece : PieceBase
                 }
             }
 
-            if (x - 1 >= 0 && y - 1 >= 0 && board[x - 1, y - 1] != null)
+            if (x - 1 >= 0 && y - 1 >= 0 && board[x - 1, y - 1] != null &&
+                board[x - 1, y - 1].Color == PieceColor.White && !(board[x - 1, y - 1] is KingPiece))
                 moves.Add(new Vector2Int(x - 1, y - 1));
-            if (x + 1 < 8 && y - 1 >= 0  && board[x + 1, y - 1] != null)
+            if (x + 1 < 8 && y - 1 >= 0 && board[x + 1, y - 1] != null &&
+                board[x + 1, y - 1].Color == PieceColor.White && !(board[x + 1, y - 1] is KingPiece))
                 moves.Add(new Vector2Int(x + 1, y - 1));
         }
 
 
         return moves;
     }
-    
-    
-    
-    
 }

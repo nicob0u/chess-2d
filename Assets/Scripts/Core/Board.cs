@@ -67,7 +67,7 @@ public class Board
         var piece = pieces[from.x, from.y];
         if (piece == null) return;
 
-        if (pieces[to.x, to.y] != null)
+        if (pieces[to.x, to.y] != null && pieces[from.x, from.y].Color != pieces[to.x, to.y].Color) 
             CapturePiece(to);
 
 

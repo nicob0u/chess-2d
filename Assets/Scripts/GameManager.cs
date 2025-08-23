@@ -84,7 +84,7 @@ public class GameManager : MonoBehaviour
         SetTurn(pieceVisual.gameObject);
     }
 
-    public void AssignPrefabsToPieces(GameObject prefab, PieceBase corePiece, int x, int y, GameObject visualPiece,
+    public void AssignPrefabsToPieces(PieceBase corePiece, int x, int y, GameObject visualPiece,
         PieceVisual visual)
     {
         visual.corePiece = corePiece;
@@ -107,6 +107,8 @@ public class GameManager : MonoBehaviour
             Debug.Log("Black's turn is over, switching to white.");
             pieceColor = PieceColor.White;
         }
+        
+        clickedObject = null;
     }
 
     public void SetTurn(GameObject pieceVisual)
