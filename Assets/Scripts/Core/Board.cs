@@ -1,13 +1,15 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Board
 {
     public PieceBase[,] pieces;
     private int size;
+    public List<PieceBase> capturedPieces;
     public Board(int size = 8)
     {
         this.size = size;
-        pieces = new PieceBase[size, size]; 
+        pieces = new PieceBase[size, size];
     }
 
     public void Init()
@@ -31,17 +33,14 @@ public class Board
 
                 if ((j == 0 || j == 7) && (i == 1 || i == 6))
                 {
-                   
                     PieceColor color = (j == 0) ? PieceColor.White : PieceColor.Black;
                     pieces[i, j] = new KnightPiece(color);
                 }
 
                 if ((j == 0 || j == 7) && (i == 2 || i == 5))
                 {
-                    
                     PieceColor color = (j == 0) ? PieceColor.White : PieceColor.Black;
                     pieces[i, j] = new BishopPiece(color);
-                    
                 }
 
                 if ((j == 0 || j == 7) && (i == 4))
@@ -57,14 +56,29 @@ public class Board
                 }
             }
         }
+        
+        
+        capturedPieces = new List<PieceBase>();
+        
     }
 
     public void MovePiece(Vector2Int from, Vector2Int to)
     {
         var piece = pieces[from.x, from.y];
         if (piece == null) return;
-        
-       pieces[to.x, to.y] = piece;
-       pieces[from.x, from.y] = null;
+
+        if (pieces[to.x, to.y] != null)
+            CapturePiece(to);
+
+
+        pieces[to.x, to.y] = piece;
+        pieces[from.x, from.y] = null;
+    }
+
+    public void CapturePiece(Vector2Int to)
+    {
+        pieces[to.x, to.y].IsCaptured = true;
+        capturedPieces.Add(pieces[to.x, to.y]);
+        pieces[to.x, to.y] = null;
     }
 }

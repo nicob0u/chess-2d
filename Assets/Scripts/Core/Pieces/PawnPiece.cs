@@ -36,11 +36,16 @@ public class PawnPiece : PieceBase
                     }
                 }
             }
-         
+
+            if (x - 1 >= 0 && y + 1 < 8 && board[x - 1, y + 1] != null && board[x - 1, y + 1].Color == PieceColor.Black )
+                moves.Add(new Vector2Int(x - 1, y + 1));
+            if (x + 1 < 8 && y + 1 < 8 && board[x + 1, y + 1] != null && board[x + 1, y + 1].Color == PieceColor.Black )
+                moves.Add(new Vector2Int(x + 1, y + 1));
         }
+
+
         else if (Color == PieceColor.Black)
         {
-            
             if (y == 6)
             {
                 for (int j = y - 1; j > y - 3; j--)
@@ -51,7 +56,6 @@ public class PawnPiece : PieceBase
                         var allowedMove = new Vector2Int(x, j);
                         moves.Add(allowedMove);
                     }
-              
                 }
             }
             else
@@ -66,9 +70,17 @@ public class PawnPiece : PieceBase
                 }
             }
 
+            if (x - 1 >= 0 && y - 1 >= 0 && board[x - 1, y - 1] != null)
+                moves.Add(new Vector2Int(x - 1, y - 1));
+            if (x + 1 < 8 && y - 1 >= 0  && board[x + 1, y - 1] != null)
+                moves.Add(new Vector2Int(x + 1, y - 1));
         }
 
 
         return moves;
     }
+    
+    
+    
+    
 }

@@ -71,12 +71,15 @@ public class BoardVisuals : MonoBehaviour
             GameObject visualPiece = Instantiate(prefab, pos, Quaternion.identity);
             var visual = visualPiece.GetComponent<PieceVisual>();
             gameManager.AssignPrefabsToPieces(prefab, corePiece, x, y, visualPiece, visual);
+            gameManager.pieceToGameObject[_corePiece] = visualPiece;
+            
+            
         }
     }
 
-    
+
     public void ApplyVisualMovement(GameObject clickedObject, PieceVisual pieceVisual, Vector2Int mouseGridPos)
-    { 
+    {
         // move element visually
         clickedObject.transform.position =
             new Vector3(mouseGridPos.x, mouseGridPos.y, clickedObject.transform.position.z);

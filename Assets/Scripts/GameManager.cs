@@ -1,22 +1,26 @@
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
 
 public class GameManager : MonoBehaviour
 {
     BoardVisuals boardVisuals;
-    public List<GameObject> pieceVisuals;
-    PieceColor pieceColor;
+    [FormerlySerializedAs("pieceVisuals")] public List<GameObject> pieceGameObjects;
     Board board;
     public Tiles tiles;
     public static GameObject clickedObject;
-    
+    PieceColor pieceColor;
+    public Dictionary<PieceBase, GameObject> pieceToGameObject = new Dictionary<PieceBase, GameObject>();
+
+
     void Awake()
     {
         board = new Board();
         board.Init();
         boardVisuals = FindFirstObjectByType<BoardVisuals>();
-        pieceVisuals = new List<GameObject>();
+        pieceGameObjects = new List<GameObject>();
         tiles = FindFirstObjectByType<Tiles>();
     }
 
@@ -25,6 +29,31 @@ public class GameManager : MonoBehaviour
         boardVisuals.SpawnPieces(board);
         tiles.CreateTiles();
         EnableWhitePiecesOnly();
+    }
+
+
+    void Update()
+    {
+        CapturePieceVisually();
+    }
+
+    void CapturePieceVisually()
+    {
+        if (board.capturedPieces.Count > 0)
+        {
+            foreach (PieceBase capturedPiece in board.capturedPieces)
+            {
+                if (pieceToGameObject.TryGetValue(capturedPiece, out GameObject pieceGo))
+                {
+                    if (pieceGo != null)
+                    {
+                        pieceGameObjects.Remove(pieceGo);
+                        pieceToGameObject.Remove(capturedPiece);
+                        Destroy(pieceGo);
+                    }
+                }
+            }
+        }
     }
 
     public void ApplyMovement()
@@ -48,6 +77,7 @@ public class GameManager : MonoBehaviour
         // move from --> to
         board.MovePiece(pieceVisual.boardPosition, mouseGridPos);
 
+
         // move piece visually
         boardVisuals.ApplyVisualMovement(clickedObject, pieceVisual, mouseGridPos);
         EndTurn(pieceVisual.corePiece.Color);
@@ -62,7 +92,7 @@ public class GameManager : MonoBehaviour
         visual.boardPosition = new Vector2Int(x, y);
 
         visualPiece.tag = "Piece";
-        pieceVisuals.Add(visualPiece);
+        pieceGameObjects.Add(visualPiece);
     }
 
     public void EndTurn(PieceColor color)
@@ -77,16 +107,15 @@ public class GameManager : MonoBehaviour
             Debug.Log("Black's turn is over, switching to white.");
             pieceColor = PieceColor.White;
         }
-            
     }
 
     public void SetTurn(GameObject pieceVisual)
     {
         if (pieceColor == PieceColor.White)
         {
-            Debug.Log(pieceVisuals.Count);
-            
-            foreach (GameObject piece in pieceVisuals)
+            Debug.Log(pieceGameObjects.Count);
+
+            foreach (GameObject piece in pieceGameObjects)
             {
                 var pieceCollider = piece.GetComponent<BoxCollider2D>();
 
@@ -99,7 +128,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            foreach (GameObject piece in pieceVisuals)
+            foreach (GameObject piece in pieceGameObjects)
             {
                 var pieceCollider = piece.GetComponent<BoxCollider2D>();
 
@@ -110,9 +139,10 @@ public class GameManager : MonoBehaviour
             }
         }
     }
+
     void EnableWhitePiecesOnly()
     {
-        foreach (GameObject piece in pieceVisuals)
+        foreach (GameObject piece in pieceGameObjects)
         {
             var pieceCollider = piece.GetComponent<BoxCollider2D>();
 
@@ -155,6 +185,4 @@ public class GameManager : MonoBehaviour
             tiles.HighlightTiles(newSelected, visualPosition.x, visualPosition.y, board);
         }
     }
-
-   
 }
