@@ -1,4 +1,4 @@
-using UnityEngine;
+
 using System.Collections.Generic;
 
 public class KnightPiece : PieceBase
@@ -7,9 +7,12 @@ public class KnightPiece : PieceBase
     {
     }
 
-    public override List<Vector2Int> GetMoves(PieceBase[,] board, int x, int y)
+    public override List<Position> GetMoves(PieceBase[,] board)
     {
-        var moves = new List<Vector2Int>();
+        int y = Position.Y;
+        int x = Position.X;
+
+        var moves = new List<Position>();
 
         for (int i = x - 2; i < x + 3; i++)
         {
@@ -23,13 +26,13 @@ public class KnightPiece : PieceBase
                 if (i == x - 1 || i == x + 1)
                 {
                     if (j == y - 1 || j == y + 1 || j == y) continue;
-                    moves.Add(new Vector2Int(i, j));
+                    moves.Add(new Position(i, j));
                 }
 
                 if (i == x - 2 || i == x + 2)
                 {
                     if (j == y - 2 || j == y + 2 || j == y) continue;
-                    moves.Add(new Vector2Int(i, j));
+                    moves.Add(new Position(i, j));
                 }
             }
         }

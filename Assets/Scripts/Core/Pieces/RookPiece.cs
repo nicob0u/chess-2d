@@ -1,4 +1,3 @@
-using UnityEngine;
 using System.Collections.Generic;
 
 public class RookPiece : PieceBase
@@ -7,9 +6,12 @@ public class RookPiece : PieceBase
     {
     }
 
-    public override List<Vector2Int> GetMoves(PieceBase[,] board, int x, int y)
+    public override List<Position> GetMoves(PieceBase[,] board)
     {
-        var moves = new List<Vector2Int>();
+        int y = Position.Y;
+        int x = Position.X;
+
+        var moves = new List<Position>();
 
         // left
         for (int i = x + 1; i < 8; i++)
@@ -17,11 +19,11 @@ public class RookPiece : PieceBase
             if ((board[i, y] != null && board[i, y].Color == Color) || board[i, y] is KingPiece) break;
             if (board[i, y] != null && board[i, y].Color != Color)
             {
-                moves.Add(new Vector2Int(i, y));
+                moves.Add(new Position(i, y));
                 break;
             }
 
-            var allowedMove = new Vector2Int(i, y);
+            var allowedMove = new Position(i, y);
             moves.Add(allowedMove);
         }
 
@@ -31,11 +33,11 @@ public class RookPiece : PieceBase
             if ((board[i, y] != null && board[i, y].Color == Color) || board[i, y] is KingPiece) break;
             if (board[i, y] != null && board[i, y].Color != Color)
             {
-                moves.Add(new Vector2Int(i, y));
+                moves.Add(new Position(i, y));
                 break;
             }
 
-            var allowedMove = new Vector2Int(i, y);
+            var allowedMove = new Position(i, y);
             moves.Add(allowedMove);
         }
 
@@ -45,11 +47,11 @@ public class RookPiece : PieceBase
             if ((board[x, j] != null && board[x, j].Color == Color) || board[x, j] is KingPiece) break;
             if (board[x, j] != null && board[x, j].Color != Color)
             {
-                moves.Add(new Vector2Int(x, j));
+                moves.Add(new Position(x, j));
                 break;
             }
 
-            var allowedMove = new Vector2Int(x, j);
+            var allowedMove = new Position(x, j);
             moves.Add(allowedMove);
         }
 
@@ -59,11 +61,11 @@ public class RookPiece : PieceBase
             if ((board[x, j] != null && board[x, j].Color == Color) || board[x, j] is KingPiece) break;
             if (board[x, j] != null && board[x, j].Color != Color)
             {
-                moves.Add(new Vector2Int(x, j));
+                moves.Add(new Position(x, j));
                 break;
             }
 
-            var allowedMove = new Vector2Int(x, j);
+            var allowedMove = new Position(x, j);
             moves.Add(allowedMove);
         }
 

@@ -32,58 +32,65 @@ public class BoardVisuals : MonoBehaviour
         gameManager = FindFirstObjectByType<GameManager>();
     }
 
-    public void SpawnPieces(Board board)
+    public void SpawnPieces(List<PieceBase> pieces)
     {
-        for (int i = 0; i < boardSize; i++)
+        // for (int i = 0; i < boardSize; i++)
+        // {
+        //     for (int j = 0; j < boardSize; j++)
+        //     {
+        //         _corePiece = board.pieces[i, j];
+        //         if (_corePiece != null)
+        //         {
+        //             SpawnPiece(i, j, _corePiece);
+        //         }
+        //     }
+        // }
+        foreach (PieceBase piece in pieces)
         {
-            for (int j = 0; j < boardSize; j++)
-            {
-                _corePiece = board.pieces[i, j];
-                if (_corePiece != null)
-                {
-                    SpawnPiece(i, j, _corePiece);
-                }
-            }
+            SpawnPiece(piece);
         }
     }
 
-    void SpawnPiece(int x, int y, PieceBase corePiece)
+    void SpawnPiece(PieceBase piece)
     {
         GameObject prefab = null;
 
-        if (corePiece is PawnPiece)
-            prefab = (corePiece.Color == PieceColor.White) ? lightPawnPrefab : darkPawnPrefab;
-        else if (corePiece is RookPiece)
-            prefab = (corePiece.Color == PieceColor.White) ? lightRookPrefab : darkRookPrefab;
-        else if (corePiece is KnightPiece)
-            prefab = (corePiece.Color == PieceColor.White) ? lightKnightPrefab : darkKnightPrefab;
-        else if (corePiece is BishopPiece)
-            prefab = (corePiece.Color == PieceColor.White) ? lightBishopPrefab : darkBishopPrefab;
-        else if (corePiece is QueenPiece)
-            prefab = (corePiece.Color == PieceColor.White) ? lightQueenPrefab : darkQueenPrefab;
-        else if (corePiece is KingPiece)
-            prefab = (corePiece.Color == PieceColor.White) ? lightKingPrefab : darkKingPrefab;
+        if (piece is PawnPiece)
+            prefab = (piece.Color == PieceColor.White) ? lightPawnPrefab : darkPawnPrefab;
+        else if (piece is RookPiece)
+            prefab = (piece.Color == PieceColor.White) ? lightRookPrefab : darkRookPrefab;
+        else if (piece is KnightPiece)
+            prefab = (piece.Color == PieceColor.White) ? lightKnightPrefab : darkKnightPrefab;
+        else if (piece is BishopPiece)
+            prefab = (piece.Color == PieceColor.White) ? lightBishopPrefab : darkBishopPrefab;
+        else if (piece is QueenPiece)
+            prefab = (piece.Color == PieceColor.White) ? lightQueenPrefab : darkQueenPrefab;
+        else if (piece is KingPiece)
+            prefab = (piece.Color == PieceColor.White) ? lightKingPrefab : darkKingPrefab;
 
 
         if (prefab != null)
         {
-            Vector2 pos = new Vector2(x, y);
-            GameObject visualPiece = Instantiate(prefab, pos, Quaternion.identity);
+            
+            Vector2 prefabPos = new Vector2(piece.Position.X, piece.Position.Y);
+            Vector2 prefabPosition = new Vector2(piece.Position.X, piece.Position.Y);
+            
+            GameObject visualPiece = Instantiate(prefab, prefabPosition, Quaternion.identity);
             var visual = visualPiece.GetComponent<PieceVisual>();
-            gameManager.AssignPrefabsToPieces(corePiece, x, y, visualPiece, visual);
-            gameManager.pieceToGameObject[_corePiece] = visualPiece;
+            gameManager.AssignPrefabsToPieces(piece, visualPiece, visual);
+            gameManager.pieceToGameObject[piece] = visualPiece;
             
             
         }
     }
 
 
-    public void ApplyVisualMovement(GameObject clickedObject, PieceVisual pieceVisual, Vector2Int mouseGridPos)
+    public void ApplyVisualMovement(GameObject clickedObject, Vector2Int mouseGridPos)
     {
         // move element visually
         clickedObject.transform.position =
             new Vector3(mouseGridPos.x, mouseGridPos.y, clickedObject.transform.position.z);
-        pieceVisual.boardPosition = mouseGridPos;
+        
         // clear previous position visually
         var sr = clickedObject.GetComponent<SpriteRenderer>();
         if (sr != null) sr.color = Color.white;

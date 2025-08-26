@@ -41,26 +41,11 @@ public class Tiles : MonoBehaviour
     }
 
 
-    public void HighlightTiles(GameObject clickedObject, int x, int y, Board board)
+    public void HighlightTiles(List<Position> allowedMoves)
     {
-        var piece = clickedObject.GetComponent<PieceVisual>().corePiece;
-
-        if (piece == null)
-            Debug.Log("Piece null");
-        if (board == null)
+        foreach (Position move in allowedMoves)
         {
-            Debug.Log("Board null");
-        }
-
-        List<Vector2Int> allowedMoves = piece.GetMoves(board.pieces, x, y);
-        if (board.pieces == null)
-        {
-            Debug.Log("No Pieces");
-        }
-
-        foreach (Vector2Int move in allowedMoves)
-        {
-            var sr = tileObjects[move.x, move.y].GetComponent<SpriteRenderer>();
+            var sr = tileObjects[move.X, move.Y].GetComponent<SpriteRenderer>();
 
             sr.color = Color.yellow;
         }

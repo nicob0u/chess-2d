@@ -1,5 +1,5 @@
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
 
 public enum PieceColor
 {
@@ -7,14 +7,27 @@ public enum PieceColor
     Black
 }
 
+public struct Position
+{
+    public int X;
+    public int Y;
+
+    public Position(int x, int y)
+    {
+        X = x;
+        Y = y;
+    }
+    
+}
 public abstract class PieceBase
 {
-    public PieceColor Color { get;  set; }
+    public PieceColor Color { get; set; }
     public bool IsCaptured { get; set; }
-    public abstract List<Vector2Int> GetMoves(PieceBase[,] board, int x, int y);
+    public Position Position { get; set; }
+    public abstract List<Position> GetMoves(PieceBase[,] board);
+
     public PieceBase(PieceColor color)
     {
         Color = color;
     }
-
 }

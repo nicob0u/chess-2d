@@ -1,4 +1,3 @@
-using UnityEngine;
 using System.Collections.Generic;
 
 public class BishopPiece : PieceBase
@@ -7,9 +6,11 @@ public class BishopPiece : PieceBase
     {
     }
 
-    public override List<Vector2Int> GetMoves(PieceBase[,] board, int x, int y)
-    {
-        var moves = new List<Vector2Int>();
+    public override List<Position> GetMoves(PieceBase[,] board)
+    {   int y = Position.Y;
+        int x = Position.X;
+
+        var moves = new List<Position>();
 
         // right up
         int i = x + 1;
@@ -20,11 +21,11 @@ public class BishopPiece : PieceBase
                 break;
             if (board[i, j] != null && board[i, j].Color != Color)
             {
-                moves.Add(new Vector2Int(i, j));
+                moves.Add(new Position(i, j));
                 break;
             }
 
-            moves.Add(new Vector2Int(i, j));
+            moves.Add(new Position(i, j));
             i++;
             j++;
         }
@@ -38,11 +39,11 @@ public class BishopPiece : PieceBase
                 break;
             if (board[i, j] != null && board[i, j].Color != Color)
             {
-                moves.Add(new Vector2Int(i, j));
+                moves.Add(new Position(i, j));
                 break;
             }
 
-            moves.Add(new Vector2Int(i, j));
+            moves.Add(new Position(i, j));
             i++;
             j--;
         }
@@ -56,11 +57,11 @@ public class BishopPiece : PieceBase
                 break;
             if (board[i, j] != null && board[i, j].Color != Color)
             {
-                moves.Add(new Vector2Int(i, j));
+                moves.Add(new Position(i, j));
                 break;
             }
 
-            moves.Add(new Vector2Int(i, j));
+            moves.Add(new Position(i, j));
             i--;
             j++;
         }
@@ -74,11 +75,11 @@ public class BishopPiece : PieceBase
                 break;
             if (board[i, j] != null && board[i, j].Color != Color)
             {
-                moves.Add(new Vector2Int(i, j));
+                moves.Add(new Position(i, j));
                 break;
             }
 
-            moves.Add(new Vector2Int(i, j));
+            moves.Add(new Position(i, j));
             i--;
             j--;
         }

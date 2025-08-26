@@ -8,17 +8,18 @@ public class GameManager : MonoBehaviour
 {
     BoardVisuals boardVisuals;
     [FormerlySerializedAs("pieceVisuals")] public List<GameObject> pieceGameObjects;
-    Board board;
     public Tiles tiles;
     public static GameObject clickedObject;
     PieceColor pieceColor;
     public Dictionary<PieceBase, GameObject> pieceToGameObject = new Dictionary<PieceBase, GameObject>();
-
+    ChessGame chessGame;
+    List<Position> legalMoves = new List<Position>();
+    
 
     void Awake()
     {
-        board = new Board();
-        board.Init();
+        chessGame = new ChessGame();
+        chessGame.InitializeBoard();
         boardVisuals = FindFirstObjectByType<BoardVisuals>();
         pieceGameObjects = new List<GameObject>();
         tiles = FindFirstObjectByType<Tiles>();
@@ -26,7 +27,7 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        boardVisuals.SpawnPieces(board);
+        boardVisuals.SpawnPieces(chessGame.GetAllPieces());
         tiles.CreateTiles();
         EnableWhitePiecesOnly();
     }
@@ -39,9 +40,10 @@ public class GameManager : MonoBehaviour
 
     void CapturePieceVisually()
     {
-        if (board.capturedPieces.Count > 0)
+        var capturedPieces = chessGame.GetCapturedPieces();
+        if (capturedPieces.Count > 0)
         {
-            foreach (PieceBase capturedPiece in board.capturedPieces)
+            foreach (PieceBase capturedPiece in capturedPieces)
             {
                 if (pieceToGameObject.TryGetValue(capturedPiece, out GameObject pieceGo))
                 {
@@ -62,8 +64,7 @@ public class GameManager : MonoBehaviour
 
         var piece = pieceVisual.corePiece;
 
-        List<Vector2Int> allowedMoves =
-            piece.GetMoves(board.pieces, pieceVisual.boardPosition.x, pieceVisual.boardPosition.y);
+
 
         Vector2 mouseWorldPos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
         Vector2Int mouseGridPos = new Vector2Int(
@@ -71,26 +72,27 @@ public class GameManager : MonoBehaviour
             Mathf.FloorToInt(mouseWorldPos.y)
         );
 
+        //convert mouse position to logical position
+        Position targetPosition = new Position(mouseGridPos.x, mouseGridPos.y);
 
-        if (!allowedMoves.Contains(mouseGridPos))
-            return;
+      
         // move from --> to
-        board.MovePiece(pieceVisual.boardPosition, mouseGridPos);
+         chessGame.PerformMove(piece, targetPosition);
 
 
         // move piece visually
-        boardVisuals.ApplyVisualMovement(clickedObject, pieceVisual, mouseGridPos);
-        EndTurn(pieceVisual.corePiece.Color);
-        SetTurn(pieceVisual.gameObject);
+        if(chessGame.wasMoveSuccessful)
+        {
+            boardVisuals.ApplyVisualMovement(clickedObject, mouseGridPos);
+            EndTurn(pieceVisual.corePiece.Color);
+            SetTurn(pieceVisual.gameObject);
+        }
     }
 
-    public void AssignPrefabsToPieces(PieceBase corePiece, int x, int y, GameObject visualPiece,
+    public void AssignPrefabsToPieces(PieceBase corePiece, GameObject visualPiece,
         PieceVisual visual)
     {
         visual.corePiece = corePiece;
-        board.pieces[x, y] = visual.corePiece;
-        visual.boardPosition = new Vector2Int(x, y);
-
         visualPiece.tag = "Piece";
         pieceGameObjects.Add(visualPiece);
     }
@@ -107,7 +109,7 @@ public class GameManager : MonoBehaviour
             Debug.Log("Black's turn is over, switching to white.");
             pieceColor = PieceColor.White;
         }
-        
+
         clickedObject = null;
     }
 
@@ -183,8 +185,8 @@ public class GameManager : MonoBehaviour
 
 
             var visualPiece = newSelected.GetComponent<PieceVisual>();
-            Vector2Int visualPosition = visualPiece.boardPosition;
-            tiles.HighlightTiles(newSelected, visualPosition.x, visualPosition.y, board);
+            var allowedMoves = chessGame.GetLegalMovesFor(visualPiece.corePiece);
+            tiles.HighlightTiles(allowedMoves);
         }
     }
 }
