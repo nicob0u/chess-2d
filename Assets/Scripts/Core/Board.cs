@@ -1,18 +1,21 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Board
 {
-    public PieceBase[,] pieces;
+    #region properties
+
+    private Dictionary<Vector2Int, PieceBase> pieces = new Dictionary<Vector2Int, PieceBase>();
+    Vector2Int logicalPiecePos;
     private int size;
-    public List<PieceBase> capturedPieces;
+    public bool wasMoveSuccessful;
 
-    public Board(int size = 8)
-    {
-        this.size = size;
-        pieces = new PieceBase[size, size];
-    }
+    #endregion
 
+    #region API
+
+    //Initialize
     public void Init()
     {
         for (int i = 0; i < 8; i++)
@@ -24,86 +27,154 @@ public class Board
                     PieceColor color = (j == 1) ? PieceColor.White : PieceColor.Black;
 
                     PawnPiece pawnPiece = new PawnPiece(color);
-                    pieces[i, j] = pawnPiece;
-                    pawnPiece.Position = new Position(i, j);
+                    logicalPiecePos = new Vector2Int(i, j);
+                    pieces[logicalPiecePos] = pawnPiece;
+                    pawnPiece.Position = new Vector2Int(i, j);
                     Debug.Log(
-                        $"{pawnPiece} at {pawnPiece.Position.X}, {pawnPiece.Position.Y} has been added to the list of pieces");
+                        $"{pawnPiece} at {pawnPiece.Position.x}, {pawnPiece.Position.y} has been added to the list of pieces");
                 }
 
                 if ((j == 0 || j == 7) && (i == 0 || i == 7))
                 {
                     PieceColor color = (j == 0) ? PieceColor.White : PieceColor.Black;
-                    pieces[i, j] = new RookPiece(color);
-                    pieces[i, j].Position = new Position(i, j);
-                    Debug.Log(
-                        $"{pieces[i, j]} at {pieces[i, j].Position.X}, {pieces[i, j].Position.Y} has been added to the list of pieces");
+                    RookPiece rookPiece = new RookPiece(color);
+                    logicalPiecePos = new Vector2Int(i, j);
+                    pieces[logicalPiecePos] = rookPiece;
+                    rookPiece.Position = new Vector2Int(i, j);
                 }
 
                 if ((j == 0 || j == 7) && (i == 1 || i == 6))
                 {
                     PieceColor color = (j == 0) ? PieceColor.White : PieceColor.Black;
-                    pieces[i, j] = new KnightPiece(color);
-                    pieces[i, j].Position = new Position(i, j);
+                    KnightPiece knightPiece = new KnightPiece(color);
+                    logicalPiecePos = new Vector2Int(i, j);
+                    pieces[logicalPiecePos] = knightPiece;
+                    knightPiece.Position = new Vector2Int(i, j);
                 }
 
                 if ((j == 0 || j == 7) && (i == 2 || i == 5))
                 {
                     PieceColor color = (j == 0) ? PieceColor.White : PieceColor.Black;
-                    pieces[i, j] = new BishopPiece(color);
-                    pieces[i, j].Position = new Position(i, j);
+                    BishopPiece bishopPiece = new BishopPiece(color);
+                    logicalPiecePos = new Vector2Int(i, j);
+                    pieces[logicalPiecePos] = bishopPiece;
+                    bishopPiece.Position = new Vector2Int(i, j);
                 }
 
                 if ((j == 0 || j == 7) && (i == 4))
                 {
                     PieceColor color = (j == 0) ? PieceColor.White : PieceColor.Black;
-                    pieces[i, j] = new QueenPiece(color);
-                    pieces[i, j].Position = new Position(i, j);
+                    QueenPiece queenPiece = new QueenPiece(color);
+                    logicalPiecePos = new Vector2Int(i, j);
+                    pieces[logicalPiecePos] = queenPiece;
+                    queenPiece.Position = new Vector2Int(i, j);
                 }
 
                 if ((j == 0 || j == 7) && (i == 3))
                 {
                     PieceColor color = (j == 0) ? PieceColor.White : PieceColor.Black;
-                    pieces[i, j] = new KingPiece(color);
-                    pieces[i, j].Position = new Position(i, j);
+                    KingPiece kingPiece = new KingPiece(color);
+                    logicalPiecePos = new Vector2Int(i, j);
+                    pieces[logicalPiecePos] = kingPiece;
+                    kingPiece.Position = new Vector2Int(i, j);
                 }
 
-                if (pieces[i, j] == null)
+                if (pieces == null)
                 {
-                    Debug.Log($" {pieces[i, j]} is null");
+                    Debug.Log($" {pieces[logicalPiecePos]} is null");
                 }
+            }
+
+            foreach (Vector2Int testPos in pieces.Keys)
+            {
+                Debug.Log($"{pieces[testPos]} at {testPos} ");
             }
         }
 
-        capturedPieces = new List<PieceBase>();
+        // capturedPieces = new List<PieceBase>();
     }
 
-    public void MovePiece(Position from, Position to)
+    //GetAllMoves
+
+    //GetLegalMoves
+
+    public List<Vector2Int> GetLegalMovesFor(Vector2Int piecePosition)
     {
-        var piece = pieces[from.X, from.Y];
-        if (piece == null) return;
-
-        if (pieces[to.X, to.Y] != null && pieces[from.X, from.Y].Color != pieces[to.X, to.Y].Color)
-            CapturePiece(to);
-
-        pieces[to.X, to.Y] = piece;
-        pieces[from.X, from.Y] = null;
-    }
-
-    public bool IsEnPassantVulnerable(PieceBase piece, Position from)
-    {
-        if (piece is PawnPiece && Mathf.Abs(piece.Position.Y - from.Y) == 2 && (from.Y == 1 || from.Y == 6))
+        if (pieces.TryGetValue(piecePosition, out PieceBase piece))
         {
-            return true;
+            piece.GetMoves(pieces);
         }
 
-        return false;
+        return piece.GetMoves(pieces);
     }
 
-
-    public void CapturePiece(Position to)
+    //MovePiece
+    public void MovePiece(Vector2Int from, Vector2Int to)
     {
-        pieces[to.X, to.Y].IsCaptured = true;
-        capturedPieces.Add(pieces[to.X, to.Y]);
-        pieces[to.X, to.Y] = null;
+        var piece = pieces[from];
+        if (piece == null) return;
+
+        if (pieces[to] != null && pieces[from].Color != pieces[to].Color)
+            CapturePiece(to);
+
+        pieces[to] = piece;
+        pieces[from] = null;
+        wasMoveSuccessful = true;
     }
+
+    //GetAllPiece
+
+    public List<PieceBase> GetAllPieces()
+    {
+        List<PieceBase> piecesToSpawn = new List<PieceBase>();
+        foreach (var kvp in pieces)
+            if (kvp.Value != null)
+            {
+                var piece = kvp.Value;
+                piecesToSpawn.Add(piece);
+            }
+
+        return piecesToSpawn;
+    }
+
+    //GetTurn
+
+    #endregion
+
+    #region logic
+
+    // private List<PieceBase> GetCapturedPieces()
+    // {
+    //     List<PieceBase> capturedPiecesList = new List<PieceBase>();
+    //     foreach (PieceBase piece in capturedPieces)
+    //     {
+    //         capturedPiecesList.Add(piece);
+    //     }
+    //
+    //     return capturedPiecesList;
+    // }
+
+    private void CapturePiece(Vector2Int to)
+    {
+        Vector2Int capturedPosition = new Vector2Int(-1, -1);
+        pieces[to].IsCaptured = true;
+        pieces[to].Position = capturedPosition;
+        // capturedPieces.Add(pieces[to]);
+        pieces[to] = null;
+    }
+
+    public List<Vector2Int> GetAllMoves(Vector2Int currentPosition)
+    {
+        List<Vector2Int> allAllowedMoves = new List<Vector2Int>();
+        foreach (PieceBase piece in pieces.Values)
+        {
+            if (piece == null) continue;
+            if (piece.IsCaptured) continue;
+            allAllowedMoves.AddRange(piece.GetMoves(pieces));
+        }
+
+        return GetAllMoves(currentPosition);
+    }
+
+    #endregion
 }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEngine;
 
 public class RookPiece : PieceBase
 {
@@ -6,66 +7,71 @@ public class RookPiece : PieceBase
     {
     }
 
-    public override List<Position> GetMoves(PieceBase[,] board)
+    public override List<Vector2Int> GetMoves(Dictionary<Vector2Int, PieceBase> pieces)
     {
-        int y = Position.Y;
-        int x = Position.X;
+        int y = Position.x;
+        int x = Position.y;
+        Vector2Int movePos;
 
-        var moves = new List<Position>();
+        var moves = new List<Vector2Int>();
 
         // left
         for (int i = x + 1; i < 8; i++)
         {
-            if ((board[i, y] != null && board[i, y].Color == Color) || board[i, y] is KingPiece) break;
-            if (board[i, y] != null && board[i, y].Color != Color)
+            movePos = new Vector2Int(i, y);
+            if ((pieces[movePos] != null && pieces[movePos].Color == Color) || pieces[movePos] is KingPiece) break;
+            if (pieces[movePos] != null && pieces[movePos].Color != Color)
             {
-                moves.Add(new Position(i, y));
+                moves.Add(new Vector2Int(i, y));
                 break;
             }
 
-            var allowedMove = new Position(i, y);
+            var allowedMove = new Vector2Int(i, y);
             moves.Add(allowedMove);
         }
 
         // right
         for (int i = x - 1; i >= 0; i--)
         {
-            if ((board[i, y] != null && board[i, y].Color == Color) || board[i, y] is KingPiece) break;
-            if (board[i, y] != null && board[i, y].Color != Color)
+            movePos = new Vector2Int(i, y);
+            if ((pieces[movePos] != null && pieces[movePos].Color == Color) || pieces[movePos] is KingPiece) break;
+            if (pieces[movePos] != null && pieces[movePos].Color != Color)
             {
-                moves.Add(new Position(i, y));
+                moves.Add(new Vector2Int(i, y));
                 break;
             }
 
-            var allowedMove = new Position(i, y);
+            var allowedMove = new Vector2Int(i, y);
             moves.Add(allowedMove);
         }
 
         // up
         for (int j = y + 1; j < 8; j++)
         {
-            if ((board[x, j] != null && board[x, j].Color == Color) || board[x, j] is KingPiece) break;
-            if (board[x, j] != null && board[x, j].Color != Color)
+            movePos = new Vector2Int(x, j);
+            if ((pieces[movePos] != null && pieces[movePos].Color == Color) || pieces[movePos] is KingPiece) break;
+            if (pieces[movePos] != null && pieces[movePos].Color != Color)
             {
-                moves.Add(new Position(x, j));
+                moves.Add(new Vector2Int(x, j));
                 break;
             }
 
-            var allowedMove = new Position(x, j);
+            var allowedMove = new Vector2Int(x, j);
             moves.Add(allowedMove);
         }
 
         // down
         for (int j = y - 1; j >= 0; j--)
         {
-            if ((board[x, j] != null && board[x, j].Color == Color) || board[x, j] is KingPiece) break;
-            if (board[x, j] != null && board[x, j].Color != Color)
+            movePos = new Vector2Int(x, j);
+            if ((pieces[movePos] != null && pieces[movePos].Color == Color) || pieces[movePos] is KingPiece) break;
+            if (pieces[movePos] != null && pieces[movePos].Color != Color)
             {
-                moves.Add(new Position(x, j));
+                moves.Add(new Vector2Int(x, j));
                 break;
             }
 
-            var allowedMove = new Position(x, j);
+            var allowedMove = new Vector2Int(x, j);
             moves.Add(allowedMove);
         }
 

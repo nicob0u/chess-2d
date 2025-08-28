@@ -72,8 +72,8 @@ public class BoardVisuals : MonoBehaviour
         if (prefab != null)
         {
             
-            Vector2 prefabPos = new Vector2(piece.Position.X, piece.Position.Y);
-            Vector2 prefabPosition = new Vector2(piece.Position.X, piece.Position.Y);
+            Vector2 prefabPos = new Vector2(piece.Position.x, piece.Position.y);
+            Vector2 prefabPosition = new Vector2(piece.Position.x, piece.Position.y);
             
             GameObject visualPiece = Instantiate(prefab, prefabPosition, Quaternion.identity);
             var visual = visualPiece.GetComponent<PieceVisual>();

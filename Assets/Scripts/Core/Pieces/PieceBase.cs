@@ -7,24 +7,13 @@ public enum PieceColor
     Black
 }
 
-public struct Position
-{
-    public int X;
-    public int Y;
 
-    public Position(int x, int y)
-    {
-        X = x;
-        Y = y;
-    }
-    
-}
 public abstract class PieceBase
 {
     public PieceColor Color { get; set; }
     public bool IsCaptured { get; set; }
-    public Position Position { get; set; }
-    public abstract List<Position> GetMoves(PieceBase[,] board);
+    public Vector2Int Position { get; set; }
+    public abstract List<Vector2Int> GetMoves(Dictionary<Vector2Int, PieceBase> pieces);
 
     public PieceBase(PieceColor color)
     {

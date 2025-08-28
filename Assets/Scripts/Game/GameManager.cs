@@ -12,14 +12,14 @@ public class GameManager : MonoBehaviour
     public static GameObject clickedObject;
     PieceColor pieceColor;
     public Dictionary<PieceBase, GameObject> pieceToGameObject = new Dictionary<PieceBase, GameObject>();
-    ChessGame chessGame;
-    List<Position> legalMoves = new List<Position>();
-    
+    List<Vector2Int> legalMoves = new List<Vector2Int>();
+    private Board board;
+    List<PieceBase> allPieces;
 
     void Awake()
     {
-        chessGame = new ChessGame();
-        chessGame.InitializeBoard();
+        board = new Board();
+        board.Init();
         boardVisuals = FindFirstObjectByType<BoardVisuals>();
         pieceGameObjects = new List<GameObject>();
         tiles = FindFirstObjectByType<Tiles>();
@@ -27,34 +27,32 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        boardVisuals.SpawnPieces(chessGame.GetAllPieces());
+        allPieces = board.GetAllPieces();
+        boardVisuals.SpawnPieces(allPieces);
         tiles.CreateTiles();
         EnableWhitePiecesOnly();
     }
 
 
-    void Update()
+    //
+    // void EnPasssantVulnerable()
+    // {
+    //     chessGame.CheckForEnPassantVulnerability();
+    // }
+    void CapturePieceVisually(Vector2Int piecePos)
     {
-        CapturePieceVisually();
-    }
-
-    void CapturePieceVisually()
-    {
-        var capturedPieces = chessGame.GetCapturedPieces();
-        if (capturedPieces.Count > 0)
+        foreach (PieceBase logicalPiece in allPieces)
         {
-            foreach (PieceBase capturedPiece in capturedPieces)
-            {
-                if (pieceToGameObject.TryGetValue(capturedPiece, out GameObject pieceGo))
+            if (logicalPiece.Position == piecePos)
+                if (pieceToGameObject.TryGetValue(logicalPiece, out GameObject pieceGo))
                 {
                     if (pieceGo != null)
                     {
                         pieceGameObjects.Remove(pieceGo);
-                        pieceToGameObject.Remove(capturedPiece);
+                        pieceToGameObject.Remove(logicalPiece);
                         Destroy(pieceGo);
                     }
                 }
-            }
         }
     }
 
@@ -65,7 +63,6 @@ public class GameManager : MonoBehaviour
         var piece = pieceVisual.corePiece;
 
 
-
         Vector2 mouseWorldPos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
         Vector2Int mouseGridPos = new Vector2Int(
             Mathf.FloorToInt(mouseWorldPos.x),
@@ -73,15 +70,15 @@ public class GameManager : MonoBehaviour
         );
 
         //convert mouse position to logical position
-        Position targetPosition = new Position(mouseGridPos.x, mouseGridPos.y);
+        Vector2Int targetPosition = new Vector2Int(mouseGridPos.x, mouseGridPos.y);
 
-      
+
         // move from --> to
-         chessGame.PerformMove(piece, targetPosition);
+        PerformMove(piece.Position, targetPosition);
 
 
         // move piece visually
-        if(chessGame.wasMoveSuccessful)
+        if (board.wasMoveSuccessful)
         {
             boardVisuals.ApplyVisualMovement(clickedObject, mouseGridPos);
             EndTurn(pieceVisual.corePiece.Color);
@@ -158,10 +155,20 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void ToggleSelection(GameObject newSelected)
+    public void ToggleSelection(Vector2Int piecePosition)
     {
         Debug.Log("Toggle Selection");
-
+        GameObject newSelected = null;
+        
+        foreach (GameObject pieceGo in pieceGameObjects)
+        {
+            var piece =  pieceGo.GetComponent<PieceVisual>().corePiece;
+            if (piece.Position == piecePosition)
+            {
+                newSelected = pieceGo;
+            }
+        }
+        
         if (clickedObject == newSelected)
         {
             var sr = clickedObject.GetComponent<SpriteRenderer>();
@@ -185,8 +192,38 @@ public class GameManager : MonoBehaviour
 
 
             var visualPiece = newSelected.GetComponent<PieceVisual>();
-            var allowedMoves = chessGame.GetLegalMovesFor(visualPiece.corePiece);
+            var allowedMoves = board.GetLegalMovesFor(visualPiece.corePiece.Position);
             tiles.HighlightTiles(allowedMoves);
         }
+    }
+
+
+    public void PerformMove(Vector2Int currentPiecePos, Vector2Int targetPiecePos)
+    {
+        List<Vector2Int> allowedMoves =
+            board.GetLegalMovesFor(currentPiecePos);
+
+        if (allowedMoves.Count == 0)
+            Debug.Log("Allowed moves are empty");
+
+        if (!allowedMoves.Contains(targetPiecePos))
+        {
+            Debug.Log($"Target position {targetPiecePos.x},{targetPiecePos.y} is invalid");
+            Debug.Log("Target position is invalid");
+            board.wasMoveSuccessful = false;
+            return;
+        }
+
+        board.MovePiece(currentPiecePos, targetPiecePos);
+        foreach (PieceBase logicalPiece in allPieces)
+        {
+            if (logicalPiece.Position == targetPiecePos)
+                CapturePieceVisually(targetPiecePos);
+        }
+        Debug.Log(
+            $"Piece is moving from {currentPiecePos.x},{currentPiecePos.y} to {targetPiecePos.x},{targetPiecePos.y}");
+        currentPiecePos = targetPiecePos;
+        Debug.Log($"Piece is now located at {currentPiecePos.x},  {currentPiecePos.y}");
+        board.wasMoveSuccessful = true;
     }
 }

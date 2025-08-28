@@ -5,19 +5,18 @@ using UnityEngine;
 public class PawnPiece : PieceBase
 {
     public bool IsEnPassantTarget = false;
-    public List<Position> WhiteEnPassantTargets = new List<Position>();
-    public List<Position> BlackEnPassantTargets = new List<Position>();
 
     public PawnPiece(PieceColor color) : base(color)
     {
     }
 
-    public override List<Position> GetMoves(PieceBase[,] board)
+    public override List<Vector2Int> GetMoves(Dictionary<Vector2Int, PieceBase> pieces)
     {
-        var moves = new List<Position>();
-        int y = Position.Y;
-        int x = Position.X;
+        var moves = new List<Vector2Int>();
+        int y = Position.y;
+        int x = Position.x;
 
+        Vector2Int movePos;
 
         if (Color == PieceColor.White)
         {
@@ -25,42 +24,47 @@ public class PawnPiece : PieceBase
             {
                 for (int j = y + 1; j < y + 3; j++)
                 {
-                    if (board[x, j] != null) break;
+                    movePos = new Vector2Int(x, j);
+                    if (pieces[movePos] != null) break;
 
-                    if (board[x, j] == null)
+                    if (pieces[movePos] == null)
                     {
-                        var allowedMove = new Position(x, j);
+                        var allowedMove = new Vector2Int(x, j);
                         moves.Add(allowedMove);
                         IsEnPassantTarget = true;
                     }
                 }
             }
             else
+
             {
                 for (int j = y + 1; j < y + 2; j++)
                 {
-                    if (board[x, j] == null)
+                    movePos = new Vector2Int(x, j);
+                    if (pieces[movePos] == null)
                     {
-                        var allowedMove = new Position(x, j);
+                        var allowedMove = new Vector2Int(x, j);
                         moves.Add(allowedMove);
                         IsEnPassantTarget = false;
                     }
                 }
             }
 
-            if (x - 1 >= 0 && y + 1 < 8 && board[x - 1, y + 1] != null &&
-                board[x - 1, y + 1].Color == PieceColor.Black &&
-                !(board[x - 1, y + 1] is KingPiece))
+            movePos = new Vector2Int(x - 1, y + 1);
+            if (x - 1 >= 0 && y + 1 < 8 && pieces[movePos] != null &&
+                pieces[movePos].Color == PieceColor.Black &&
+                !(pieces.TryGetValue(movePos, out PieceBase piece) is KingPiece))
             {
-                moves.Add(new Position(x - 1, y + 1));
+                moves.Add(new Vector2Int(x - 1, y + 1));
                 IsEnPassantTarget = false;
             }
 
-            if (x + 1 < 8 && y + 1 < 8 && board[x + 1, y + 1] != null &&
-                board[x + 1, y + 1].Color == PieceColor.Black &&
-                !(board[x + 1, y + 1] is KingPiece))
+            movePos = new Vector2Int(x - 1, y - 1);
+            if (x + 1 < 8 && y + 1 < 8 && pieces[movePos] != null &&
+                pieces[movePos].Color == PieceColor.Black &&
+                !(pieces[movePos] is KingPiece))
             {
-                moves.Add(new Position(x + 1, y + 1));
+                moves.Add(new Vector2Int(x + 1, y + 1));
                 IsEnPassantTarget = false;
             }
         }
@@ -72,11 +76,13 @@ public class PawnPiece : PieceBase
             {
                 for (int j = y - 1; j > y - 3; j--)
                 {
-                    if (board[x, j] != null) break;
+                    movePos = new Vector2Int(x, j);
 
-                    if (board[x, j] == null)
+                    if (pieces[movePos] != null) break;
+
+                    if (pieces[movePos] == null)
                     {
-                        var allowedMove = new Position(x, j);
+                        var allowedMove = new Vector2Int(x, j);
                         moves.Add(allowedMove);
                         IsEnPassantTarget = true;
                     }
@@ -86,63 +92,35 @@ public class PawnPiece : PieceBase
             {
                 for (int j = y - 1; j > y - 2; j--)
                 {
-                    if (board[x, j] == null)
+                    movePos = new Vector2Int(x, j);
+                    
+                    if (pieces[movePos] == null)
                     {
-                        var allowedMove = new Position(x, j);
+                        var allowedMove = new Vector2Int(x, j);
                         moves.Add(allowedMove);
                         IsEnPassantTarget = false;
                     }
                 }
             }
 
-            if (x - 1 >= 0 && y - 1 >= 0 && board[x - 1, y - 1] != null &&
-                board[x - 1, y - 1].Color == PieceColor.White && !(board[x - 1, y - 1] is KingPiece))
+            movePos = new Vector2Int(x - 1, y - 1);
+            if (x - 1 >= 0 && y - 1 >= 0 && pieces[movePos] != null &&
+                pieces[movePos].Color == PieceColor.White && !(pieces[movePos] is KingPiece))
             {
-                moves.Add(new Position(x - 1, y - 1));
+                moves.Add(new Vector2Int(x - 1, y - 1));
                 IsEnPassantTarget = false;
             }
 
-            if (x + 1 < 8 && y - 1 >= 0 && board[x + 1, y - 1] != null &&
-                board[x + 1, y - 1].Color == PieceColor.White && !(board[x + 1, y - 1] is KingPiece))
+            
+            movePos = new Vector2Int(x + 1, y - 1);
+            if (x + 1 < 8 && y - 1 >= 0 && pieces[movePos] != null &&
+                pieces[movePos].Color == PieceColor.White && !(pieces[movePos] is KingPiece))
             {
-                moves.Add(new Position(x + 1, y - 1));
+                moves.Add(new Vector2Int(x + 1, y - 1));
                 IsEnPassantTarget = false;
             }
         }
 
-        // GetEnPassantMoves(board[x, y]);
-        // foreach (Position move in BlackEnPassantTargets)
-        // {
-        //     Debug.Log($"En passant warning at {move.X}, {move.Y}");
-        // }
-        //
-        // foreach (Position move in WhiteEnPassantTargets)
-        // {
-        //     Debug.Log($"En passant warning at {move.X}, {move.Y}");
-        // }
-        //
-        //
-        // if (board[x, y] != null && board[x, y].Color == PieceColor.White)
-        //     moves.AddRange(BlackEnPassantTargets);
-        // else if (board[x, y] != null && board[x, y].Color == PieceColor.Black)
-        //     moves.AddRange(WhiteEnPassantTargets);
-        // if (WhiteEnPassantTargets.Count == 0)
-        // {
-        //     Debug.Log("No white en passant");
-        // }
-
         return moves;
     }
-
-    // public void GetEnPassantMoves(PieceBase piece)
-    // {
-    //     if (piece.Color == PieceColor.Black && IsEnPassantTarget)
-    //     {
-    //         BlackEnPassantTargets.Add(new Position(piece.Position.X, piece.Position.Y + 1));
-    //     }
-    //     else if (piece.Color == PieceColor.White && IsEnPassantTarget)
-    //     {
-    //         WhiteEnPassantTargets.Add(new Position(piece.Position.X, piece.Position.Y - 1));
-    //     }
-    // }
 }

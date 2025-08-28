@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEngine;
 
 public class QueenPiece : PieceBase
 {
@@ -6,93 +7,98 @@ public class QueenPiece : PieceBase
     {
     }
 
-    public override List<Position> GetMoves(PieceBase[,] board)
+    public override List<Vector2Int> GetMoves(Dictionary<Vector2Int, PieceBase> pieces)
     {
-        int y = Position.Y;
-        int x = Position.X;
-
-        var moves = new List<Position>();
+        int y = Position.y;
+        int x = Position.x;
+        Vector2Int movePos;
+        var moves = new List<Vector2Int>();
 
         // straight paths
 
         for (int i = x + 1; i < 8; i++)
         {
-            if (board[i, y] != null && board[i, y].Color != Color && !(board[i, y] is KingPiece))
+            movePos = new Vector2Int(i, y);
+            if (pieces[movePos] != null && pieces[movePos].Color != Color && !(pieces[movePos] is KingPiece))
             {
-                moves.Add(new Position(i, y));
+                moves.Add(new Vector2Int(i, y));
                 break;
             }
 
-            if (board[i, y] != null && board[i, y].Color == Color)
+            if (pieces[movePos] != null && pieces[movePos].Color == Color)
                 break;
 
-            var allowedMove = new Position(i, y);
+            var allowedMove = new Vector2Int(i, y);
             moves.Add(allowedMove);
         }
 
 
         for (int i = x - 1; i >= 0; i--)
         {
-            if (board[i, y] != null && board[i, y].Color != Color && !(board[i, y] is KingPiece))
+            movePos = new Vector2Int(i, y);
+            if (pieces[movePos] != null && pieces[movePos].Color != Color && !(pieces[movePos] is KingPiece))
             {
-                moves.Add(new Position(i, y));
+                moves.Add(new Vector2Int(i, y));
                 break;
             }
 
-            if (board[i, y] != null && board[i, y].Color == Color)
+            if (pieces[movePos] != null && pieces[movePos].Color == Color)
                 break;
 
 
-            var allowedMove = new Position(i, y);
+            var allowedMove = new Vector2Int(i, y);
             moves.Add(allowedMove);
         }
 
 
         for (int j = y + 1; j < 8; j++)
         {
-            if (board[x, j] != null && board[x, j].Color != Color && !(board[x, j] is KingPiece))
+            movePos = new Vector2Int(x, j);
+            if (pieces[movePos] != null && pieces[movePos].Color != Color && !(pieces[movePos] is KingPiece))
             {
-                moves.Add(new Position(x, j));
+                moves.Add(new Vector2Int(x, j));
                 break;
             }
 
-            if (board[x, j] != null && board[x, j].Color == Color)
+            if (pieces[movePos] != null && pieces[movePos].Color == Color)
                 break;
 
-            var allowedMove = new Position(x, j);
+            var allowedMove = new Vector2Int(x, j);
             moves.Add(allowedMove);
         }
 
 
         for (int j = y - 1; j >= 0; j--)
         {
-            if (board[x, j] != null && board[x, j].Color != Color && !(board[x, j] is KingPiece))
+            movePos = new Vector2Int(x, j);
+            if (pieces[movePos] != null && pieces[movePos].Color != Color && !(pieces[movePos] is KingPiece))
             {
-                moves.Add(new Position(x, j));
+                moves.Add(new Vector2Int(x, j));
                 break;
             }
 
-            if (board[x, j] != null && board[x, j].Color == Color)
+            if (pieces[movePos] != null && pieces[movePos].Color == Color)
                 break;
 
-            var allowedMove = new Position(x, j);
+            var allowedMove = new Vector2Int(x, j);
             moves.Add(allowedMove);
         }
 
         // diagonal paths
         int k = x + 1;
         int l = y + 1;
+        movePos = new Vector2Int(k, l);
         while (k < 8 && l < 8)
         {
-            if ((board[k, l] != null && board[k, l].Color == Color) || board[k, l] is KingPiece)
+            if ((pieces[movePos] != null && pieces[movePos].Color == Color) || pieces[movePos] is KingPiece)
                 break;
-            if (board[k, l] != null && board[k, l].Color != Color)
+            if (pieces[movePos] != null && pieces[movePos].Color != Color)
             {
-                moves.Add(new Position(k, l));
+                moves.Add(new Vector2Int(k, l));
                 break;
             }
 
-            moves.Add(new Position(k, l));
+            moves.Add(new Vector2Int(k, l));
             k++;
             l++;
         }
@@ -102,15 +108,15 @@ public class QueenPiece : PieceBase
         l = y - 1;
         while (k < 8 && l >= 0)
         {
-            if ((board[k, l] != null && board[k, l].Color == Color) || board[k, l] is KingPiece)
+            if ((pieces[movePos] != null && pieces[movePos].Color == Color) || pieces[movePos] is KingPiece)
                 break;
-            if (board[k, l] != null && board[k, l].Color != Color)
+            if (pieces[movePos] != null && pieces[movePos].Color != Color)
             {
-                moves.Add(new Position(k, l));
+                moves.Add(new Vector2Int(k, l));
                 break;
             }
 
-            moves.Add(new Position(k, l));
+            moves.Add(new Vector2Int(k, l));
             k++;
             l--;
         }
@@ -120,15 +126,15 @@ public class QueenPiece : PieceBase
         l = y + 1;
         while (k >= 0 && l < 8)
         {
-            if ((board[k, l] != null && board[k, l].Color == Color) || board[k, l] is KingPiece)
+            if ((pieces[movePos] != null && pieces[movePos].Color == Color) || pieces[movePos] is KingPiece)
                 break;
-            if (board[k, l] != null && board[k, l].Color != Color)
+            if (pieces[movePos] != null && pieces[movePos].Color != Color)
             {
-                moves.Add(new Position(k, l));
+                moves.Add(new Vector2Int(k, l));
                 break;
             }
 
-            moves.Add(new Position(k, l));
+            moves.Add(new Vector2Int(k, l));
             k--;
             l++;
         }
@@ -138,15 +144,15 @@ public class QueenPiece : PieceBase
         l = y - 1;
         while (k >= 0 && l >= 0)
         {
-            if ((board[k, l] != null && board[k, l].Color == Color) || board[k, l] is KingPiece)
+            if ((pieces[movePos] != null && pieces[movePos].Color == Color) || pieces[movePos] is KingPiece)
                 break;
-            if (board[k, l] != null && board[k, l].Color != Color)
+            if (pieces[movePos] != null && pieces[movePos].Color != Color)
             {
-                moves.Add(new Position(k, l));
+                moves.Add(new Vector2Int(k, l));
                 break;
             }
 
-            moves.Add(new Position(k, l));
+            moves.Add(new Vector2Int(k, l));
             k--;
             l--;
         }

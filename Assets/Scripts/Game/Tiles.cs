@@ -41,11 +41,11 @@ public class Tiles : MonoBehaviour
     }
 
 
-    public void HighlightTiles(List<Position> allowedMoves)
+    public void HighlightTiles(List<Vector2Int> allowedMoves)
     {
-        foreach (Position move in allowedMoves)
+        foreach (Vector2Int move in allowedMoves)
         {
-            var sr = tileObjects[move.X, move.Y].GetComponent<SpriteRenderer>();
+            var sr = tileObjects[move.x, move.y].GetComponent<SpriteRenderer>();
 
             sr.color = Color.yellow;
         }
