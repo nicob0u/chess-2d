@@ -19,13 +19,13 @@ public class QueenPiece : PieceBase
         for (int i = x + 1; i < 8; i++)
         {
             movePos = new Vector2Int(i, y);
-            if (pieces[movePos] != null && pieces[movePos].Color != Color && !(pieces[movePos] is KingPiece))
+            if (!IsEmpty(pieces, movePos) && pieces[movePos].Color != Color && !(pieces[movePos] is KingPiece))
             {
                 moves.Add(new Vector2Int(i, y));
                 break;
             }
 
-            if (pieces[movePos] != null && pieces[movePos].Color == Color)
+            if (!IsEmpty(pieces, movePos) && pieces[movePos].Color == Color)
                 break;
 
             var allowedMove = new Vector2Int(i, y);
@@ -36,13 +36,13 @@ public class QueenPiece : PieceBase
         for (int i = x - 1; i >= 0; i--)
         {
             movePos = new Vector2Int(i, y);
-            if (pieces[movePos] != null && pieces[movePos].Color != Color && !(pieces[movePos] is KingPiece))
+            if (!IsEmpty(pieces, movePos) && pieces[movePos].Color != Color && !(pieces[movePos] is KingPiece))
             {
                 moves.Add(new Vector2Int(i, y));
                 break;
             }
 
-            if (pieces[movePos] != null && pieces[movePos].Color == Color)
+            if (!IsEmpty(pieces, movePos) && pieces[movePos].Color == Color)
                 break;
 
 
@@ -54,13 +54,13 @@ public class QueenPiece : PieceBase
         for (int j = y + 1; j < 8; j++)
         {
             movePos = new Vector2Int(x, j);
-            if (pieces[movePos] != null && pieces[movePos].Color != Color && !(pieces[movePos] is KingPiece))
+            if (!IsEmpty(pieces, movePos) && pieces[movePos].Color != Color && !(pieces[movePos] is KingPiece))
             {
                 moves.Add(new Vector2Int(x, j));
                 break;
             }
 
-            if (pieces[movePos] != null && pieces[movePos].Color == Color)
+            if (!IsEmpty(pieces, movePos) && pieces[movePos].Color == Color)
                 break;
 
             var allowedMove = new Vector2Int(x, j);
@@ -71,13 +71,13 @@ public class QueenPiece : PieceBase
         for (int j = y - 1; j >= 0; j--)
         {
             movePos = new Vector2Int(x, j);
-            if (pieces[movePos] != null && pieces[movePos].Color != Color && !(pieces[movePos] is KingPiece))
+            if (!IsEmpty(pieces, movePos) && pieces[movePos].Color != Color && !(pieces[movePos] is KingPiece))
             {
                 moves.Add(new Vector2Int(x, j));
                 break;
             }
 
-            if (pieces[movePos] != null && pieces[movePos].Color == Color)
+            if (!IsEmpty(pieces, movePos) && pieces[movePos].Color == Color)
                 break;
 
             var allowedMove = new Vector2Int(x, j);
@@ -90,9 +90,9 @@ public class QueenPiece : PieceBase
         movePos = new Vector2Int(k, l);
         while (k < 8 && l < 8)
         {
-            if ((pieces[movePos] != null && pieces[movePos].Color == Color) || pieces[movePos] is KingPiece)
+            if ((!IsEmpty(pieces, movePos) && pieces[movePos].Color == Color) || pieces[movePos] is KingPiece)
                 break;
-            if (pieces[movePos] != null && pieces[movePos].Color != Color)
+            if (!IsEmpty(pieces, movePos) && pieces[movePos].Color != Color)
             {
                 moves.Add(new Vector2Int(k, l));
                 break;
@@ -108,9 +108,9 @@ public class QueenPiece : PieceBase
         l = y - 1;
         while (k < 8 && l >= 0)
         {
-            if ((pieces[movePos] != null && pieces[movePos].Color == Color) || pieces[movePos] is KingPiece)
+            if ((!IsEmpty(pieces, movePos) && pieces[movePos].Color == Color) || pieces[movePos] is KingPiece)
                 break;
-            if (pieces[movePos] != null && pieces[movePos].Color != Color)
+            if (!IsEmpty(pieces, movePos) && pieces[movePos].Color != Color)
             {
                 moves.Add(new Vector2Int(k, l));
                 break;
@@ -126,9 +126,9 @@ public class QueenPiece : PieceBase
         l = y + 1;
         while (k >= 0 && l < 8)
         {
-            if ((pieces[movePos] != null && pieces[movePos].Color == Color) || pieces[movePos] is KingPiece)
+            if ((!IsEmpty(pieces, movePos) && pieces[movePos].Color == Color) || pieces[movePos] is KingPiece)
                 break;
-            if (pieces[movePos] != null && pieces[movePos].Color != Color)
+            if (!IsEmpty(pieces, movePos) && pieces[movePos].Color != Color)
             {
                 moves.Add(new Vector2Int(k, l));
                 break;
@@ -144,9 +144,9 @@ public class QueenPiece : PieceBase
         l = y - 1;
         while (k >= 0 && l >= 0)
         {
-            if ((pieces[movePos] != null && pieces[movePos].Color == Color) || pieces[movePos] is KingPiece)
+            if ((!IsEmpty(pieces, movePos) && pieces[movePos].Color == Color) || pieces[movePos] is KingPiece)
                 break;
-            if (pieces[movePos] != null && pieces[movePos].Color != Color)
+            if (!IsEmpty(pieces, movePos) && pieces[movePos].Color != Color)
             {
                 moves.Add(new Vector2Int(k, l));
                 break;

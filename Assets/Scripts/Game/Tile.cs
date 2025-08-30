@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -6,18 +7,18 @@ namespace DefaultNamespace
 {
     public class Tile : MonoBehaviour, IPointerClickHandler
     {
-        GameManager gameManager;
-        public Vector2Int tilePosition;
+        Vector2Int tilePosition;
 
-        void Start()
+
+
+        public void Init(Vector2Int tilePosition)
         {
-            gameManager = FindFirstObjectByType<GameManager>();
+            this.tilePosition = tilePosition;
         }
         
-        public void OnPointerClick(PointerEventData eventData)
+        public void OnPointerClick([CanBeNull] PointerEventData eventData)
         {
-            Debug.Log(tilePosition);
-            gameManager.ToggleSelection(tilePosition);
+            GameManager.instance.OnTileClicked(tilePosition);
         }
     }
 }

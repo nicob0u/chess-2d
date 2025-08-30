@@ -19,7 +19,7 @@ public class KingPiece : PieceBase
             for (int j = y - 1; j < y + 2; j++)
             {
                 if (i < 0 || i > 7 || j < 0 || j > 7) continue;
-                if (pieces[movePos] != null &&
+                if (!IsEmpty(pieces, movePos) &&
                     (pieces[movePos] is KingPiece || pieces[movePos].Color == Color)) continue;
                 moves.Add(new Vector2Int(i, j));
             }

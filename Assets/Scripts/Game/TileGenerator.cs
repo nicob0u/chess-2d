@@ -18,7 +18,7 @@ namespace DefaultNamespace
             tile = FindAnyObjectByType<Tile>();
         }
 
-        void Start()
+        public void Init()
         {
             for (int i = 0; i < boardSize; i++)
             {
@@ -28,25 +28,27 @@ namespace DefaultNamespace
                     if ((i % 2 == 0 && j % 2 == 0) || (i % 2 != 0 && j % 2 != 0))
                     {
                         tile = Instantiate(blackTile, pos, Quaternion.identity);
-                        tile.tilePosition = new Vector2Int(i, j);
+                        tile.Init(new Vector2Int(i, j));
                     }
                     else
                     {
                         tile = Instantiate(whiteTile, pos, Quaternion.identity);
                         // tile.tag = "Tile";
-                        tile.tilePosition = new Vector2Int(i, j);
+                        tile.Init(new Vector2Int(i, j));
+
                     }
 
                     tile.transform.SetParent(this.transform);
+                    tile.transform.SetAsFirstSibling();
                     tile.name = $"tile({i},{j})";
 
                     tileObjects[i, j] = tile;
                 }
             }
-            // SpawnDebugColliders();
+            
+            
         }
-
-
+        
       
     }
 }

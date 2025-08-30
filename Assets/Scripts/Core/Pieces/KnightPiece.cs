@@ -22,20 +22,23 @@ public class KnightPiece : PieceBase
             {
                 movePos = new Vector2Int(i, j);
                 if (i < 0 || i > 7 || j < 0 || j > 7) continue;
-                if ((pieces[movePos] != null && pieces[movePos].Color == Color) || pieces[movePos] is KingPiece)
-                    continue;
+                if ((!IsEmpty(pieces, movePos) && pieces[movePos].Color == Color) || pieces[movePos] is KingPiece)
+                    // to be configured
+                    break;
 
-
-                if (i == x - 1 || i == x + 1)
+                if (IsEmpty(pieces, movePos))
                 {
-                    if (j == y - 1 || j == y + 1 || j == y) continue;
-                    moves.Add(new Vector2Int(i, j));
-                }
+                    if (i == x - 1 || i == x + 1)
+                    {
+                        if (j == y - 1 || j == y + 1 || j == y) continue;
+                        moves.Add(new Vector2Int(i, j));
+                    }
 
-                if (i == x - 2 || i == x + 2)
-                {
-                    if (j == y - 2 || j == y + 2 || j == y) continue;
-                    moves.Add(new Vector2Int(i, j));
+                    if (i == x - 2 || i == x + 2)
+                    {
+                        if (j == y - 2 || j == y + 2 || j == y) continue;
+                        moves.Add(new Vector2Int(i, j));
+                    }
                 }
             }
         }

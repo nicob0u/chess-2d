@@ -1385,6 +1385,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             return asset.controlSchemes[m_GamepadSchemeIndex];
         }
     }
+    
     private int m_TouchSchemeIndex = -1;
     /// <summary>
     /// Provides access to the input control scheme.

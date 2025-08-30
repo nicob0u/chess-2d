@@ -21,9 +21,9 @@ public class BishopPiece : PieceBase
         while (i < 8 && j < 8)
         {
             movePos = new Vector2Int(x, y);
-            if ((pieces[movePos] != null && pieces[movePos].Color == Color) || pieces[movePos] is KingPiece)
+            if ((!IsEmpty(pieces, movePos) && pieces[movePos].Color == Color) || pieces[movePos] is KingPiece)
                 break;
-            if (pieces[movePos] != null && pieces[movePos].Color != Color)
+            if (!IsEmpty(pieces, movePos) && pieces[movePos].Color != Color)
             {
                 moves.Add(new Vector2Int(i, j));
                 break;
@@ -41,9 +41,9 @@ public class BishopPiece : PieceBase
         {
             movePos = new Vector2Int(x, y);
             
-            if ((pieces[movePos] != null && pieces[movePos].Color == Color) || pieces[movePos] is KingPiece)
+            if ((!IsEmpty(pieces, movePos) && pieces[movePos].Color == Color) || pieces[movePos] is KingPiece)
                 break;
-            if (pieces[movePos] != null && pieces[movePos].Color != Color)
+            if (!IsEmpty(pieces, movePos) && pieces[movePos].Color != Color)
             {
                 moves.Add(new Vector2Int(i, j));
                 break;
@@ -61,9 +61,9 @@ public class BishopPiece : PieceBase
         {
             movePos = new Vector2Int(x, y);
             
-            if ((pieces[movePos] != null && pieces[movePos].Color == Color) || pieces[movePos] is KingPiece)
+            if ((!IsEmpty(pieces, movePos) && pieces[movePos].Color == Color) || pieces[movePos] is KingPiece)
                 break;
-            if (pieces[movePos] != null && pieces[movePos].Color != Color)
+            if (!IsEmpty(pieces, movePos) && pieces[movePos].Color != Color)
             {
                 moves.Add(new Vector2Int(i, j));
                 break;
@@ -81,9 +81,9 @@ public class BishopPiece : PieceBase
         { 
             movePos = new Vector2Int(x, y);
             
-            if ((pieces[movePos] != null && pieces[movePos].Color == Color) || pieces[movePos] is KingPiece)
+            if ((!IsEmpty(pieces, movePos) && pieces[movePos].Color == Color) || pieces[movePos] is KingPiece)
                 break;
-            if (pieces[movePos] != null && pieces[movePos].Color != Color)
+            if (!IsEmpty(pieces, movePos) && pieces[movePos].Color != Color)
             {
                 moves.Add(new Vector2Int(i, j));
                 break;

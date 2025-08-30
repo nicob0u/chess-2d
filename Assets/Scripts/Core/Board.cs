@@ -10,6 +10,8 @@ public class Board
     Vector2Int logicalPiecePos;
     private int size;
     public bool wasMoveSuccessful;
+    public PieceColor currentTurn;
+    public PieceColor previousTurn;
 
     #endregion
 
@@ -97,29 +99,53 @@ public class Board
     //GetAllMoves
 
     //GetLegalMoves
-
     public List<Vector2Int> GetLegalMovesFor(Vector2Int piecePosition)
     {
-        if (pieces.TryGetValue(piecePosition, out PieceBase piece))
+        List<Vector2Int> legalMoves = new List<Vector2Int>();
+        
+        foreach (var move in legalMoves)
         {
-            piece.GetMoves(pieces);
+            Debug.Log($"Piece is allowed to move to {move}");
         }
 
-        return piece.GetMoves(pieces);
+        if (pieces.TryGetValue(piecePosition, out PieceBase piece))
+        {
+                legalMoves = piece.GetMoves(pieces);
+        }
+
+        return legalMoves;
+    }
+
+    //GetPiece
+    public PieceBase GetPiece(Vector2Int position)
+    {
+        pieces.TryGetValue(position, out PieceBase piece);
+        return piece;
     }
 
     //MovePiece
     public void MovePiece(Vector2Int from, Vector2Int to)
     {
-        var piece = pieces[from];
+        var piece = GetPiece(from);
         if (piece == null) return;
 
-        if (pieces[to] != null && pieces[from].Color != pieces[to].Color)
+        var target = GetPiece(to);
+        if (target != null && piece.Color != target.Color)
             CapturePiece(to);
-
+        piece.Position = to;
         pieces[to] = piece;
-        pieces[from] = null;
+        pieces.Remove(from);
         wasMoveSuccessful = true;
+        if (previousTurn == PieceColor.White)
+        {
+            currentTurn = PieceColor.Black;
+        }
+        else if (previousTurn == PieceColor.Black)
+        {
+            currentTurn = PieceColor.White;
+        }
+
+        previousTurn = currentTurn;
     }
 
     //GetAllPiece
