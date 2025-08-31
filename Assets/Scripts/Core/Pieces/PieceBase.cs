@@ -10,12 +10,13 @@ public enum PieceColor
 
 public abstract class PieceBase
 {
+    public int PieceId { get; set; }
     public PieceColor Color { get; set; }
     public bool IsCaptured { get; set; }
     public Vector2Int Position { get; set; }
     public abstract List<Vector2Int> GetMoves(Dictionary<Vector2Int, PieceBase> pieces);
 
-    
+
     public PieceBase(PieceColor color)
     {
         Color = color;

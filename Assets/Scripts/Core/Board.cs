@@ -11,7 +11,8 @@ public class Board
     private int size;
     public bool wasMoveSuccessful;
     public PieceColor currentTurn;
-    public PieceColor previousTurn;
+    private int nextPieceId = 0;
+    [HideInInspector] public List<PieceBase> capturedPieces = new List<PieceBase>();
 
     #endregion
 
@@ -32,8 +33,7 @@ public class Board
                     logicalPiecePos = new Vector2Int(i, j);
                     pieces[logicalPiecePos] = pawnPiece;
                     pawnPiece.Position = new Vector2Int(i, j);
-                    Debug.Log(
-                        $"{pawnPiece} at {pawnPiece.Position.x}, {pawnPiece.Position.y} has been added to the list of pieces");
+                    pawnPiece.PieceId = nextPieceId++;
                 }
 
                 if ((j == 0 || j == 7) && (i == 0 || i == 7))
@@ -43,6 +43,7 @@ public class Board
                     logicalPiecePos = new Vector2Int(i, j);
                     pieces[logicalPiecePos] = rookPiece;
                     rookPiece.Position = new Vector2Int(i, j);
+                    rookPiece.PieceId = nextPieceId++;
                 }
 
                 if ((j == 0 || j == 7) && (i == 1 || i == 6))
@@ -52,6 +53,7 @@ public class Board
                     logicalPiecePos = new Vector2Int(i, j);
                     pieces[logicalPiecePos] = knightPiece;
                     knightPiece.Position = new Vector2Int(i, j);
+                    knightPiece.PieceId = nextPieceId++;
                 }
 
                 if ((j == 0 || j == 7) && (i == 2 || i == 5))
@@ -61,6 +63,7 @@ public class Board
                     logicalPiecePos = new Vector2Int(i, j);
                     pieces[logicalPiecePos] = bishopPiece;
                     bishopPiece.Position = new Vector2Int(i, j);
+                    bishopPiece.PieceId = nextPieceId++;
                 }
 
                 if ((j == 0 || j == 7) && (i == 4))
@@ -70,6 +73,7 @@ public class Board
                     logicalPiecePos = new Vector2Int(i, j);
                     pieces[logicalPiecePos] = queenPiece;
                     queenPiece.Position = new Vector2Int(i, j);
+                    queenPiece.PieceId = nextPieceId++;
                 }
 
                 if ((j == 0 || j == 7) && (i == 3))
@@ -79,21 +83,13 @@ public class Board
                     logicalPiecePos = new Vector2Int(i, j);
                     pieces[logicalPiecePos] = kingPiece;
                     kingPiece.Position = new Vector2Int(i, j);
-                }
-
-                if (pieces == null)
-                {
-                    Debug.Log($" {pieces[logicalPiecePos]} is null");
+                    kingPiece.PieceId = nextPieceId++;
                 }
             }
 
-            foreach (Vector2Int testPos in pieces.Keys)
-            {
-                Debug.Log($"{pieces[testPos]} at {testPos} ");
-            }
+            foreach (var piece in pieces.Values)
+                Debug.Log(piece.PieceId);
         }
-
-        // capturedPieces = new List<PieceBase>();
     }
 
     //GetAllMoves
@@ -102,15 +98,11 @@ public class Board
     public List<Vector2Int> GetLegalMovesFor(Vector2Int piecePosition)
     {
         List<Vector2Int> legalMoves = new List<Vector2Int>();
-        
-        foreach (var move in legalMoves)
-        {
-            Debug.Log($"Piece is allowed to move to {move}");
-        }
+
 
         if (pieces.TryGetValue(piecePosition, out PieceBase piece))
         {
-                legalMoves = piece.GetMoves(pieces);
+            legalMoves = piece.GetMoves(pieces);
         }
 
         return legalMoves;
@@ -128,24 +120,34 @@ public class Board
     {
         var piece = GetPiece(from);
         if (piece == null) return;
-
-        var target = GetPiece(to);
-        if (target != null && piece.Color != target.Color)
-            CapturePiece(to);
-        piece.Position = to;
-        pieces[to] = piece;
-        pieces.Remove(from);
-        wasMoveSuccessful = true;
-        if (previousTurn == PieceColor.White)
+        if (currentTurn == piece.Color)
         {
-            currentTurn = PieceColor.Black;
+            var target = GetPiece(to);
+            if (target != null && piece.Color != target.Color)
+                CapturePiece(to);
+            piece.Position = to;
+            pieces[to] = piece;
+            pieces.Remove(from);
+            wasMoveSuccessful = true;
         }
-        else if (previousTurn == PieceColor.Black)
+        else
         {
-            currentTurn = PieceColor.White;
+            Debug.Log("Not your turn yet.");
         }
 
-        previousTurn = currentTurn;
+        if (wasMoveSuccessful)
+        {
+            if (currentTurn == PieceColor.White)
+            {
+                currentTurn = PieceColor.Black;
+            }
+            else if (currentTurn == PieceColor.Black)
+            {
+                currentTurn = PieceColor.White;
+            }
+
+            Debug.Log(currentTurn);
+        }
     }
 
     //GetAllPiece
@@ -169,25 +171,15 @@ public class Board
 
     #region logic
 
-    // private List<PieceBase> GetCapturedPieces()
-    // {
-    //     List<PieceBase> capturedPiecesList = new List<PieceBase>();
-    //     foreach (PieceBase piece in capturedPieces)
-    //     {
-    //         capturedPiecesList.Add(piece);
-    //     }
-    //
-    //     return capturedPiecesList;
-    // }
-
     private void CapturePiece(Vector2Int to)
     {
-        Vector2Int capturedPosition = new Vector2Int(-1, -1);
         pieces[to].IsCaptured = true;
+        capturedPieces.Add(pieces[to]);
+        Vector2Int capturedPosition = new Vector2Int(-1, -1);
         pieces[to].Position = capturedPosition;
-        // capturedPieces.Add(pieces[to]);
-        pieces[to] = null;
+        Debug.Log("Piece has been logically captured .");
     }
+
 
     public List<Vector2Int> GetAllMoves(Vector2Int currentPosition)
     {
@@ -199,7 +191,7 @@ public class Board
             allAllowedMoves.AddRange(piece.GetMoves(pieces));
         }
 
-        return GetAllMoves(currentPosition);
+        return allAllowedMoves;
     }
 
     #endregion

@@ -54,13 +54,13 @@ public class PawnPiece : PieceBase
             if (x - 1 >= 0 && y + 1 < 8 &&
                 !IsEmpty(pieces, movePos) &&
                 pieces[movePos].Color == PieceColor.Black &&
-                !(pieces.TryGetValue(movePos, out PieceBase piece) is KingPiece))
+                !(pieces[movePos] is KingPiece))
             {
                 moves.Add(new Vector2Int(x - 1, y + 1));
                 IsEnPassantTarget = false;
             }
 
-            movePos = new Vector2Int(x - 1, y - 1);
+            movePos = new Vector2Int(x + 1, y + 1);
             if (x + 1 < 8 && y + 1 < 8 && !IsEmpty(pieces, movePos) &&
                 pieces[movePos].Color == PieceColor.Black &&
                 !(pieces[movePos] is KingPiece))

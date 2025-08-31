@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using DefaultNamespace;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
@@ -48,9 +49,6 @@ public class GameManager : MonoBehaviour
 
     public void OnTileClicked(Vector2Int pos)
     {
-        Debug.Log(pos);
-        Debug.LogWarning("Click toggled.");
-
         var piece = board.GetPiece(pos);
         var nowSelected = piece;
 
@@ -60,32 +58,49 @@ public class GameManager : MonoBehaviour
         }
         else if (piece == null)
         {
-            if (previouslySelected != null)
+            if (previouslySelected != null && board.currentTurn == previouslySelected.Color)
             {
+                Debug.Log($"Something was previously selected and the current turn is {board.currentTurn}");
                 List<Vector2Int> allowedMoves =
                     board.GetLegalMovesFor(previouslySelected.Position);
+                foreach (var move in allowedMoves)
+                {
+                    Debug.Log($"piece is allowed to move to {move}");
+                }
+                
                 if (allowedMoves.Contains(pos))
                 {
-                    PerformMove(previouslySelected.Position, pos, allowedMoves);
+                    PerformMove(pos, allowedMoves, previouslySelected);
                 }
                 else
                 {
-                    Debug.LogWarning("Selected position is not in the list of allowed moves");
-                    
+                    Debug.LogWarning("Not allowed");
                 }
+
                 DeselectPiece();
-                // if (board.wasMoveSuccessful)
-                // {
-                //     Debug.Log(
-                //         $"piece successfully moved from {piece.Position.x}, {piece.Position.y} to {pos.x}, {pos.y}");
-                // }
             }
         }
         else
         {
-            if (previouslySelected != null)
+            if (previouslySelected != null && piece.Color != previouslySelected.Color)
             {
-                // Switch selection visually
+                Debug.Log(
+                    "something was previously selected and the current turn is {piece.Color} man i dont know what the fuck im doing here");
+                List<Vector2Int> allowedMoves =
+                    board.GetLegalMovesFor(previouslySelected.Position);
+                if (allowedMoves.Contains(pos))
+                {
+                    PerformMove(pos, allowedMoves, previouslySelected);
+                }
+                else
+                {
+                    Debug.Log(
+                        "move is not allowed for some reason did i not include this in the logic. man fuck this shit");
+                }
+            }
+            else if (previouslySelected != null && board.currentTurn == piece.Color)
+            {
+                Debug.Log("same team man stop");
             }
 
             SelectPiece(nowSelected);
@@ -95,7 +110,7 @@ public class GameManager : MonoBehaviour
     void SelectPiece(PieceBase nowSelected)
     {
         previouslySelected = nowSelected;
-        Debug.Log($"Currently selected piece is {nowSelected}");
+        Debug.Log($"{nowSelected} is now selected");
     }
 
     void DeselectPiece()
@@ -104,163 +119,49 @@ public class GameManager : MonoBehaviour
         Debug.Log($"Piece deselected");
     }
 
-
-    // public void ApplyMovement()
-    // {
-    //     var pieceVisual = clickedObject.GetComponent<PieceVisualItem>();
-    //
-    //     // var piece = pieceVisual.corePiece;
-    //
-    //
-    //     Vector2 mouseWorldPos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-    //     Vector2Int mouseGridPos = new Vector2Int(
-    //         Mathf.FloorToInt(mouseWorldPos.x),
-    //         Mathf.FloorToInt(mouseWorldPos.y)
-    //     );
-    //
-    //     //convert mouse position to logical position
-    //     Vector2Int targetPosition = new Vector2Int(mouseGridPos.x, mouseGridPos.y);
-    //
-    //
-    //     // move from --> to
-    //     foreach (PieceBase piece in allPieces)
-    //     {
-    //     }
-    //
-    //     PerformMove(pieceVisual.Position, targetPosition);
-    //
-    //
-    //     // move piece visually
-    // }
-
-    // public void EndTurn(PieceColor color)
-    // {
-    //     if (color == PieceColor.White)
-    //     {
-    //         Debug.Log("White's turn is over, switching to black.");
-    //         pieceColor = PieceColor.Black;
-    //     }
-    //     else
-    //     {
-    //         Debug.Log("Black's turn is over, switching to white.");
-    //         pieceColor = PieceColor.White;
-    //     }
-    //
-    //     clickedObject = null;
-//    }
-    //
-    // public void SetTurn(GameObject pieceVisual)
-    // {
-    //     if (pieceColor == PieceColor.White)
-    //     {
-    //         Debug.Log(pieceGameObjects.Count);
-    //
-    //         foreach (GameObject piece in pieceGameObjects)
-    //         {
-    //             var pieceCollider = piece.GetComponent<BoxCollider2D>();
-    //
-    //             if (piece.GetComponent<PieceVisualItem>().corePiece.Color == PieceColor.Black)
-    //                 pieceCollider.enabled = false;
-    //
-    //             else
-    //                 pieceCollider.enabled = true;
-    //         }
-    //     }
-    //     else
-    //     {
-    //         foreach (GameObject piece in pieceGameObjects)
-    //         {
-    //             var pieceCollider = piece.GetComponent<BoxCollider2D>();
-    //
-    //             if (piece.GetComponent<PieceVisualItem>().corePiece.Color == PieceColor.White)
-    //                 pieceCollider.enabled = false;
-    //             else
-    //                 pieceCollider.enabled = true;
-    //         }
-    //     }
-    // }
-
-    // void EnableWhitePiecesOnly()
-    // {
-    //     foreach (GameObject piece in pieceGameObjects)
-    //     {
-    //         var pieceCollider = piece.GetComponent<BoxCollider2D>();
-    //
-    //         if (piece.GetComponent<PieceVisual>().corePiece.Color == PieceColor.Black)
-    //             pieceCollider.enabled = false;
-    //
-    //         else
-    //             pieceCollider.enabled = true;
-    //     }
-    // }
-
-
-    // public void ToggleSelection(Vector2Int? piecePosition)
-    // {
-    //     Debug.Log("Toggle Selection");
-    //     GameObject newSelected = null;
-    //
-    //     foreach (GameObject pieceGo in pieceGameObjects)
-    //     {
-    //         var piece = pieceGo.GetComponent<PieceVisualItem>().corePiece;
-    //         if (piece.Position == piecePosition)
-    //         {
-    //             newSelected = pieceGo;
-    //         }
-    //     }
-    //
-    //     if (clickedObject == newSelected)
-    //     {
-    //         var sr = clickedObject.GetComponent<SpriteRenderer>();
-    //         sr.color = Color.white;
-    //         clickedObject = null;
-    //         tiles.ClearHighlights();
-    //     }
-    //
-    //     else
-    //     {
-    //         if (clickedObject != null)
-    //         {
-    //             clickedObject.GetComponent<SpriteRenderer>().color = Color.white;
-    //         }
-    //
-    //         tiles.ClearHighlights();
-    //
-    //         clickedObject = newSelected;
-    //         var sr = clickedObject.GetComponent<SpriteRenderer>();
-    //         sr.color = Color.yellow;
-    //
-    //
-    //         var visualPiece = newSelected.GetComponent<PieceVisualItem>();
-    //         var allowedMoves = board.GetLegalMovesFor(visualPiece.corePiece.Position);
-    //         tiles.HighlightTiles(allowedMoves);
-    //     }
-    // }
-
-
-    public void PerformMove(Vector2Int currentPiecePos, Vector2Int targetPiecePos, List<Vector2Int> allowedMoves)
+    public void PerformMove(Vector2Int targetPiecePos, List<Vector2Int> allowedMoves, PieceBase piece)
     {
         if (allowedMoves?.Count == null)
             Debug.Log("No moves allowed.");
 
-        if (!allowedMoves.Contains(targetPiecePos))
+        if (piece.Color != board.currentTurn)
         {
-            Debug.Log($"Target position {targetPiecePos.x},{targetPiecePos.y} is invalid");
-            board.wasMoveSuccessful = false;
-            return;
+            Debug.Log("Not your turn");
         }
 
-        board.MovePiece(currentPiecePos, targetPiecePos);
-        foreach (PieceBase logicalPiece in allPieces)
+        else
         {
-            if (logicalPiece.Position == targetPiecePos)
-                boardVisuals.CapturePieceVisually(targetPiecePos, allPieces);
+            board.MovePiece(piece.Position, targetPiecePos);
+            if (boardVisuals.pieceToVisualPiece.TryGetValue(piece.PieceId, out var visualPieceId))
+            {
+                Debug.Log($"Found visual for PieceId {piece.PieceId}: {visualPieceId}");
+                PieceVisualItem visual = FindObjectsOfType<PieceVisualItem>()
+                    .FirstOrDefault(v => v.pieceVisualId == visualPieceId);
+                visual.transform.position = new Vector3(targetPiecePos.x, targetPiecePos.y, 0);
+            }
+            else
+            {
+                Debug.LogWarning($"Visual not found for PieceId {piece.PieceId}");
+            }
+
+            // var capturedPiece = board.GetPiece(targetPiecePos);
+
+                boardVisuals.CapturePieceVisually(board.capturedPieces);
         }
+
 
         Debug.Log(
-            $"Piece is moving from {currentPiecePos.x},{currentPiecePos.y} to {targetPiecePos.x},{targetPiecePos.y}");
-        currentPiecePos = targetPiecePos;
-        Debug.Log($"Piece is now located at {currentPiecePos.x},  {currentPiecePos.y}");
-        board.wasMoveSuccessful = true;
+            $"Piece is moving from {piece.Position.x},{piece.Position.y} to {targetPiecePos.x},{targetPiecePos.y}");
+        piece.Position = targetPiecePos;
+        Debug.Log($"Piece is now located at {piece.Position.x},  {piece.Position.y}");
+
+        // var piece = board.GetPiece(currentPiecePos);
+    
+    if (!allowedMoves.Contains(targetPiecePos))
+    {
+        Debug.Log($"Target position {targetPiecePos.x},{targetPiecePos.y} is invalid");
+        board.wasMoveSuccessful = false;
     }
+}
+
 }
