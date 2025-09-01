@@ -19,6 +19,7 @@ namespace DefaultNamespace
         public void OnPointerClick([CanBeNull] PointerEventData eventData)
         {
             GameManager.instance.OnTileClicked(tilePosition);
+            Debug.Log(name);
         }
     }
 }

@@ -17,19 +17,22 @@ public class BishopPiece : PieceBase
         // right up
         int i = x + 1;
         int j = y + 1;
-        
+
         while (i < 8 && j < 8)
         {
-            movePos = new Vector2Int(x, y);
-            if ((!IsEmpty(pieces, movePos) && pieces[movePos].Color == Color) || pieces[movePos] is KingPiece)
-                break;
-            if (!IsEmpty(pieces, movePos) && pieces[movePos].Color != Color)
+            movePos = new Vector2Int(i, j);
+
+            if (!IsEmpty(pieces, movePos))
             {
-                moves.Add(new Vector2Int(i, j));
-                break;
+                if (pieces[movePos].Color == Color || pieces[movePos] is KingPiece) break;
+                if (pieces[movePos].Color != Color)
+                {
+                    moves.Add(movePos);
+                    break;
+                }
             }
 
-            moves.Add(new Vector2Int(i, j));
+            moves.Add(movePos);
             i++;
             j++;
         }
@@ -39,17 +42,19 @@ public class BishopPiece : PieceBase
         j = y - 1;
         while (i < 8 && j >= 0)
         {
-            movePos = new Vector2Int(x, y);
-            
-            if ((!IsEmpty(pieces, movePos) && pieces[movePos].Color == Color) || pieces[movePos] is KingPiece)
-                break;
-            if (!IsEmpty(pieces, movePos) && pieces[movePos].Color != Color)
+            movePos = new Vector2Int(i, j);
+
+            if (!IsEmpty(pieces, movePos))
             {
-                moves.Add(new Vector2Int(i, j));
-                break;
+                if (pieces[movePos].Color == Color || pieces[movePos] is KingPiece) break;
+                if (pieces[movePos].Color != Color)
+                {
+                    moves.Add(movePos);
+                    break;
+                }
             }
 
-            moves.Add(new Vector2Int(i, j));
+            moves.Add(movePos);
             i++;
             j--;
         }
@@ -59,17 +64,19 @@ public class BishopPiece : PieceBase
         j = y + 1;
         while (i >= 0 && j < 8)
         {
-            movePos = new Vector2Int(x, y);
-            
-            if ((!IsEmpty(pieces, movePos) && pieces[movePos].Color == Color) || pieces[movePos] is KingPiece)
-                break;
-            if (!IsEmpty(pieces, movePos) && pieces[movePos].Color != Color)
+            movePos = new Vector2Int(i, j);
+
+            if (!IsEmpty(pieces, movePos))
             {
-                moves.Add(new Vector2Int(i, j));
-                break;
+                if (pieces[movePos].Color == Color || pieces[movePos] is KingPiece) break;
+                if (pieces[movePos].Color != Color)
+                {
+                    moves.Add(movePos);
+                    break;
+                }
             }
 
-            moves.Add(new Vector2Int(i, j));
+            moves.Add(movePos);
             i--;
             j++;
         }
@@ -78,18 +85,20 @@ public class BishopPiece : PieceBase
         i = x - 1;
         j = y - 1;
         while (i >= 0 && j >= 0)
-        { 
-            movePos = new Vector2Int(x, y);
-            
-            if ((!IsEmpty(pieces, movePos) && pieces[movePos].Color == Color) || pieces[movePos] is KingPiece)
-                break;
-            if (!IsEmpty(pieces, movePos) && pieces[movePos].Color != Color)
+        {
+            movePos = new Vector2Int(i, j);
+
+            if (!IsEmpty(pieces, movePos))
             {
-                moves.Add(new Vector2Int(i, j));
-                break;
+                if (pieces[movePos].Color == Color || pieces[movePos] is KingPiece) break;
+                if (pieces[movePos].Color != Color)
+                {
+                    moves.Add(movePos);
+                    break;
+                }
             }
 
-            moves.Add(new Vector2Int(i, j));
+            moves.Add(movePos);
             i--;
             j--;
         }

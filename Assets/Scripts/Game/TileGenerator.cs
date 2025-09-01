@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -35,7 +36,6 @@ namespace DefaultNamespace
                         tile = Instantiate(whiteTile, pos, Quaternion.identity);
                         // tile.tag = "Tile";
                         tile.Init(new Vector2Int(i, j));
-
                     }
 
                     tile.transform.SetParent(this.transform);
@@ -45,10 +45,25 @@ namespace DefaultNamespace
                     tileObjects[i, j] = tile;
                 }
             }
-            
-            
         }
-        
-      
+
+        public void HighlightMoves(List<Vector2Int> moves)
+        {
+            foreach (Vector2Int move in moves)
+            {
+                Debug.Log($"{move.x} + {move.y}");
+                Debug.Log($"{tileObjects[move.x, move.y].name}");
+                tileObjects[move.x, move.y].GetComponent<Image>().color = Color.yellow;
+            }
+        }
+
+        public void ClearHighlights(List<Vector2Int> moves)
+        {
+            foreach (Vector2Int move in moves)
+            {
+                if (tileObjects[move.x, move.y].GetComponent<Image>().color == Color.yellow)
+                    tileObjects[move.x, move.y].GetComponent<Image>().color = Color.white;
+            }
+        }
     }
 }

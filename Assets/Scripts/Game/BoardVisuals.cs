@@ -107,10 +107,6 @@ public class BoardVisuals : MonoBehaviour
 
     public void CapturePieceVisually(List<PieceBase> capturedPieces)
     {
-        // if (pieceToVisualPiece.TryGetValue(capturedPiece.PieceId, out var visualId))
-        // {
-        //     Debug.Log($"{capturedPiece} visual captured");
-        // }
         foreach (var capturedPiece in capturedPieces)
         {
             PieceVisualItem visual = FindObjectsOfType<PieceVisualItem>()
@@ -121,26 +117,9 @@ public class BoardVisuals : MonoBehaviour
         }
     }
 
+    void HighlightPiece()
+    {
+        
+    }
 
-    // public void Refresh(List<PieceBase> pieces)
-    // {
-    //     foreach (var visual in pieceToVisualPiece.Values)
-    //     {
-    //         DestroyImmediate(visual.gameObject);
-    //     }
-    //
-    //     pieceToVisualPiece.Clear();
-    //     Init(pieces);
-    // }
-    //
-    // public void UpdatePieceVisual(PieceBase piece)
-    // {
-    //     if (pieceToVisualPiece.TryGetValue(piece, out var visual))
-    //     {
-    //         if (visual == null) return;
-    //         var newPos = new Vector3(piece.Position.x, piece.Position.y, 0);
-    //         visual.Init(newPos, visual.GetComponent<Image>().sprite);
-    //         Debug.Log($"Visuals updated. now at {piece.Position.x}, {piece.Position.y}");
-    //     }
-    // }
 }

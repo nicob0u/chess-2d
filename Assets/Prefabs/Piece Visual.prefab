@@ -89,3 +89,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   image: {fileID: 3494959008023903548}
+  pieceVisualId: 0
