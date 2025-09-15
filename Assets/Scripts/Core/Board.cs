@@ -1,20 +1,24 @@
 using System.Collections.Generic;
 using System.Linq;
+using Core.Pieces;
+using UnityEditor;
 using UnityEngine;
 
 public class Board
 {
     #region properties
 
-    private Dictionary<Vector2Int, PieceBase> pieces = new Dictionary<Vector2Int, PieceBase>();
+    public Dictionary<Vector2Int, PieceBase> pieces = new Dictionary<Vector2Int, PieceBase>();
     Vector2Int logicalPiecePos;
     private int size;
     public bool wasMoveSuccessful;
     public PieceColor currentTurn;
     private int nextPieceId = 0;
     [HideInInspector] public List<PieceBase> capturedPieces = new List<PieceBase>();
+    private bool isCheckmate = false;
 
     #endregion
+
 
     #region API
 
@@ -29,84 +33,96 @@ public class Board
                 {
                     PieceColor color = (j == 1) ? PieceColor.White : PieceColor.Black;
 
-                    PawnPiece pawnPiece = new PawnPiece(color);
                     logicalPiecePos = new Vector2Int(i, j);
+                    PieceBase pawnPiece = new PieceBase(nextPieceId++, color, logicalPiecePos, new PawnPiece());
                     pieces[logicalPiecePos] = pawnPiece;
-                    pawnPiece.Position = new Vector2Int(i, j);
-                    pawnPiece.PieceId = nextPieceId++;
                 }
+
 
                 if ((j == 0 || j == 7) && (i == 0 || i == 7))
                 {
                     PieceColor color = (j == 0) ? PieceColor.White : PieceColor.Black;
-                    RookPiece rookPiece = new RookPiece(color);
                     logicalPiecePos = new Vector2Int(i, j);
+                    PieceBase rookPiece = new PieceBase(nextPieceId++, color, logicalPiecePos, new RookPiece());
                     pieces[logicalPiecePos] = rookPiece;
-                    rookPiece.Position = new Vector2Int(i, j);
-                    rookPiece.PieceId = nextPieceId++;
                 }
 
                 if ((j == 0 || j == 7) && (i == 1 || i == 6))
                 {
                     PieceColor color = (j == 0) ? PieceColor.White : PieceColor.Black;
-                    KnightPiece knightPiece = new KnightPiece(color);
                     logicalPiecePos = new Vector2Int(i, j);
+                    PieceBase knightPiece = new PieceBase(nextPieceId++, color, logicalPiecePos, new KnightPiece());
                     pieces[logicalPiecePos] = knightPiece;
-                    knightPiece.Position = new Vector2Int(i, j);
-                    knightPiece.PieceId = nextPieceId++;
                 }
 
                 if ((j == 0 || j == 7) && (i == 2 || i == 5))
                 {
                     PieceColor color = (j == 0) ? PieceColor.White : PieceColor.Black;
-                    BishopPiece bishopPiece = new BishopPiece(color);
                     logicalPiecePos = new Vector2Int(i, j);
+                    PieceBase bishopPiece = new PieceBase(nextPieceId++, color, logicalPiecePos, new BishopPiece());
                     pieces[logicalPiecePos] = bishopPiece;
-                    bishopPiece.Position = new Vector2Int(i, j);
-                    bishopPiece.PieceId = nextPieceId++;
                 }
 
                 if ((j == 0 || j == 7) && (i == 4))
                 {
                     PieceColor color = (j == 0) ? PieceColor.White : PieceColor.Black;
-                    QueenPiece queenPiece = new QueenPiece(color);
                     logicalPiecePos = new Vector2Int(i, j);
+                    PieceBase queenPiece = new PieceBase(nextPieceId++, color, logicalPiecePos, new QueenPiece());
                     pieces[logicalPiecePos] = queenPiece;
-                    queenPiece.Position = new Vector2Int(i, j);
-                    queenPiece.PieceId = nextPieceId++;
                 }
 
                 if ((j == 0 || j == 7) && (i == 3))
                 {
                     PieceColor color = (j == 0) ? PieceColor.White : PieceColor.Black;
-                    KingPiece kingPiece = new KingPiece(color);
                     logicalPiecePos = new Vector2Int(i, j);
+                    PieceBase kingPiece = new PieceBase(nextPieceId++, color, logicalPiecePos, new KingPiece());
                     pieces[logicalPiecePos] = kingPiece;
-                    kingPiece.Position = new Vector2Int(i, j);
-                    kingPiece.PieceId = nextPieceId++;
                 }
             }
-
-            foreach (var piece in pieces.Values)
-                Debug.Log(piece.PieceId);
         }
     }
 
-    //GetAllMoves
 
     //GetLegalMoves
     public List<Vector2Int> GetLegalMovesFor(Vector2Int piecePosition)
     {
         List<Vector2Int> legalMoves = new List<Vector2Int>();
-
-
+        var movesToRemove = new List<Vector2Int>();
         if (pieces.TryGetValue(piecePosition, out PieceBase piece))
         {
-            legalMoves = piece.GetMoves(pieces);
+            legalMoves = piece.GetMoves(pieces, this);
+            foreach (var move in legalMoves)
+            {
+                Debug.Log($"stepping over {move} rn");
+                var result = SimulateMove(piecePosition, move);
+                if (IsCheck(piece.Color, result))
+                {
+                    Debug.Log("this move can put your king in danger");
+                    movesToRemove.Add(move);
+                }
+            }
+
+            foreach (var removableMove in movesToRemove)
+            {
+                legalMoves.Remove(removableMove);
+            }
         }
 
         return legalMoves;
     }
+
+    bool IsCheckmate(PieceColor color)
+    {
+        foreach (var piece in pieces.Values.Where(p => p.Color == color && !p.IsCaptured))
+        {
+            var moves = GetLegalMovesFor(piece.Position);
+            if (moves.Count > 0)
+                return false;
+        }
+
+        return true;
+    }
+
 
     //GetPiece
     public PieceBase GetPiece(Vector2Int position)
@@ -116,82 +132,109 @@ public class Board
     }
 
     //MovePiece
+
     public void MovePiece(Vector2Int from, Vector2Int to)
     {
-        var piece = GetPiece(from);
-        if (piece == null) return;
-        if (currentTurn == piece.Color)
-        {
-            var target = GetPiece(to);
-            if (target != null && piece.Color != target.Color)
-                CapturePiece(to);
-            piece.Position = to;
-            pieces[to] = piece;
-            pieces.Remove(from);
-            wasMoveSuccessful = true;
-        }
-        else
-        {
-            Debug.Log("Not your turn yet.");
-        }
+        var result = SimulateMove(from, to);
+        pieces.TryGetValue(from, out PieceBase piece);
+        if (pieces.TryGetValue(to, out var target) && piece.Color != target.Color &&
+            !target.Equals(default(PieceBase)))
+            CapturePiece(to, pieces);
 
-        if (wasMoveSuccessful)
-        {
-            if (currentTurn == PieceColor.White)
-            {
-                currentTurn = PieceColor.Black;
-            }
-            else if (currentTurn == PieceColor.Black)
-            {
-                currentTurn = PieceColor.White;
-            }
 
-            Debug.Log(currentTurn);
-        }
+        pieces = result;
+        if (IsCheckmate(piece.Color))
+            Debug.Log("CHECKMATE BROTHER.");
+        currentTurn = (currentTurn == PieceColor.White) ? PieceColor.Black : PieceColor.White;
     }
 
     //GetAllPiece
-
     public List<PieceBase> GetAllPieces()
     {
         List<PieceBase> piecesToSpawn = new List<PieceBase>();
         foreach (var kvp in pieces)
-            if (kvp.Value != null)
-            {
-                var piece = kvp.Value;
-                piecesToSpawn.Add(piece);
-            }
+        {
+            var piece = kvp.Value;
+            piecesToSpawn.Add(piece);
+        }
 
         return piecesToSpawn;
     }
-
-    //GetTurn
 
     #endregion
 
     #region logic
 
-    private void CapturePiece(Vector2Int to)
+    bool IsCheck(PieceColor color, Dictionary<Vector2Int, PieceBase> pieceDict)
     {
-        pieces[to].IsCaptured = true;
-        capturedPieces.Add(pieces[to]);
-        Vector2Int capturedPosition = new Vector2Int(-1, -1);
-        pieces[to].Position = capturedPosition;
-        Debug.Log("Piece has been logically captured .");
+        var opponentColor = GetOppositeColor(color);
+        var allowedEnemyMoves = new List<Vector2Int>();
+
+        foreach (var piece in pieceDict.Values)
+        {
+            if (piece.Color == opponentColor && !piece.IsCaptured)
+                allowedEnemyMoves.AddRange(piece.GetMoves(pieceDict, this));
+        }
+
+        var king = pieceDict.Values.FirstOrDefault(p =>
+            p.GetLogicType() == typeof(KingPiece) && p.Color == color && !p.IsCaptured);
+
+        return allowedEnemyMoves.Contains(king.Position);
+    }
+
+    public PieceColor GetOppositeColor(PieceColor color)
+    {
+        if (color == PieceColor.White)
+            return PieceColor.Black;
+        else
+            return PieceColor.White;
+    }
+
+    void CapturePiece(Vector2Int to, Dictionary<Vector2Int, PieceBase> pieceDict)
+    {
+        if (!pieceDict.TryGetValue(to, out var piece)) return;
+
+        piece.IsCaptured = true;
+        piece.Position = new Vector2Int(-1, -1);
+        capturedPieces.Add(piece);
     }
 
 
-    public List<Vector2Int> GetAllMoves(Vector2Int currentPosition)
+    Dictionary<Vector2Int, PieceBase> SimulateMove(Vector2Int from, Vector2Int to)
     {
-        List<Vector2Int> allAllowedMoves = new List<Vector2Int>();
-        foreach (PieceBase piece in pieces.Values)
+        Dictionary<Vector2Int, PieceBase> newPiecesDict = new Dictionary<Vector2Int, PieceBase>();
+
+        foreach (var kvp in pieces)
+            newPiecesDict[kvp.Key] = kvp.Value;
+
+        if (!pieces.TryGetValue(from, out var piece)) return null;
+        Debug.Log(piece);
+
+        if (currentTurn == piece.Color)
         {
-            if (piece == null) continue;
-            if (piece.IsCaptured) continue;
-            allAllowedMoves.AddRange(piece.GetMoves(pieces));
+            Debug.Log($"it is now {currentTurn}'s turn");
+            var pieceToMove = newPiecesDict[from];
+            newPiecesDict.Remove(from);
+            pieceToMove.Position = to;
+            newPiecesDict[to] = pieceToMove;
+            wasMoveSuccessful = true;
         }
 
-        return allAllowedMoves;
+        else
+        {
+            Debug.Log("Not your turn");
+        }
+
+
+        Debug.Log(currentTurn);
+
+
+        return newPiecesDict;
+    }
+
+    public bool IsEmpty(Dictionary<Vector2Int, PieceBase> piecesDict, Vector2Int movePos)
+    {
+        return !piecesDict.ContainsKey(movePos);
     }
 
     #endregion

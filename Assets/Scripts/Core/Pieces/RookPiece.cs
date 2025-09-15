@@ -1,16 +1,13 @@
 using System.Collections.Generic;
+using Core.Pieces;
 using UnityEngine;
 
-public class RookPiece : PieceBase
+public class RookPiece : ILogic
 {
-    public RookPiece(PieceColor color) : base(color)
+    public List<Vector2Int> GetMoves(Dictionary<Vector2Int, PieceBase> pieces, Board board, PieceBase piece)
     {
-    }
-
-    public override List<Vector2Int> GetMoves(Dictionary<Vector2Int, PieceBase> pieces)
-    {
-        int y = Position.y;
-        int x = Position.x;
+        int y = piece.Position.y;
+        int x = piece.Position.x;
         Vector2Int movePos;
 
         var moves = new List<Vector2Int>();
@@ -19,9 +16,9 @@ public class RookPiece : PieceBase
         for (int i = x + 1; i < 8; i++)
         {
             movePos = new Vector2Int(i, y);
-            if (!IsEmpty(pieces, movePos))
+            if (!board.IsEmpty(pieces, movePos))
             {
-                if (pieces[movePos].Color == Color || pieces[movePos] is KingPiece)
+                if (pieces[movePos].Color == piece.Color)
                     break;
 
                 moves.Add(new Vector2Int(i, y));
@@ -36,9 +33,9 @@ public class RookPiece : PieceBase
         for (int i = x - 1; i >= 0; i--)
         {
             movePos = new Vector2Int(i, y);
-            if (!IsEmpty(pieces, movePos))
+            if (!board.IsEmpty(pieces, movePos))
             {
-                if (pieces[movePos].Color == Color || pieces[movePos] is KingPiece)
+                if (pieces[movePos].Color == piece.Color)
                     break;
 
                 moves.Add(new Vector2Int(i, y));
@@ -53,9 +50,9 @@ public class RookPiece : PieceBase
         for (int j = y + 1; j < 8; j++)
         {
             movePos = new Vector2Int(x, j);
-            if (!IsEmpty(pieces, movePos))
+            if (!board.IsEmpty(pieces, movePos))
             {
-                if (pieces[movePos].Color == Color || pieces[movePos] is KingPiece)
+                if (pieces[movePos].Color == piece.Color)
                     break;
 
                 moves.Add(new Vector2Int(x, j));
@@ -70,9 +67,9 @@ public class RookPiece : PieceBase
         for (int j = y - 1; j >= 0; j--)
         {
             movePos = new Vector2Int(x, j);
-            if (!IsEmpty(pieces, movePos))
+            if (!board.IsEmpty(pieces, movePos))
             {
-                if (pieces[movePos].Color == Color || pieces[movePos] is KingPiece)
+                if (pieces[movePos].Color == piece.Color)
                     break;
 
                 moves.Add(new Vector2Int(x, j));

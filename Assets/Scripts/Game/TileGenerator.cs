@@ -51,8 +51,6 @@ namespace DefaultNamespace
         {
             foreach (Vector2Int move in moves)
             {
-                Debug.Log($"{move.x} + {move.y}");
-                Debug.Log($"{tileObjects[move.x, move.y].name}");
                 tileObjects[move.x, move.y].GetComponent<Image>().color = Color.yellow;
             }
         }

@@ -78,20 +78,20 @@ public class BoardVisuals : MonoBehaviour
     {
         Sprite sprite = null;
 
-        if (piece is PawnPiece)
+        if (piece.GetLogicType() == typeof(PawnPiece))
         {
             sprite = (piece.Color == PieceColor.White) ? lightPawn : darkPawn;
             Debug.Log($"Sprite {sprite} is has been assigned to {piece}");
         }
-        else if (piece is RookPiece)
+        else if (piece.GetLogicType() == typeof(RookPiece))
             sprite = (piece.Color == PieceColor.White) ? lightRook : darkRook;
-        else if (piece is KnightPiece)
+        else if (piece.GetLogicType() == typeof(KnightPiece))
             sprite = (piece.Color == PieceColor.White) ? lightKnight : darkKnight;
-        else if (piece is BishopPiece)
+        else if (piece.GetLogicType() == typeof(BishopPiece))
             sprite = (piece.Color == PieceColor.White) ? lightBishop : darkBishop;
-        else if (piece is QueenPiece)
+        else if (piece.GetLogicType() == typeof(QueenPiece))
             sprite = (piece.Color == PieceColor.White) ? lightQueen : darkQueen;
-        else if (piece is KingPiece)
+        else if (piece.GetLogicType() == typeof(KingPiece))
             sprite = (piece.Color == PieceColor.White) ? lightKing : darkKing;
 
         if (sprite != null)

@@ -12,13 +12,12 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
 
     BoardVisuals boardVisuals;
-    public static GameObject clickedObject;
     PieceColor pieceColor;
     private Board board;
     List<PieceBase> allPieces;
     private TileGenerator tileGenerator;
     List<Vector2Int> allowedMoves = new List<Vector2Int>();
-    public PieceBase previouslySelected;
+    PieceBase previouslySelected;
 
     void Awake()
     {
@@ -40,22 +39,22 @@ public class GameManager : MonoBehaviour
     {
         allPieces = board.GetAllPieces();
         boardVisuals.Init(allPieces);
-        
     }
 
     public void OnTileClicked(Vector2Int pos)
     {
-        var nowSelected = board.GetPiece(pos);
+        PieceBase nowSelected = board.GetPiece(pos);
 
-        if (nowSelected == previouslySelected) 
+        if (!previouslySelected.Equals(default(PieceBase)) && allowedMoves.Contains(pos))
         {
+            PerformMove(pos, allowedMoves, previouslySelected);
+            // board.GetGameState(previouslySelected, simulatedPieces);
             DeselectPiece();
             return;
         }
 
-        if (nowSelected != null &&
-            nowSelected.Color ==
-            board.currentTurn) 
+
+        if (!nowSelected.IsCaptured && nowSelected.Color == board.currentTurn)
         {
             SelectPiece(nowSelected);
             tileGenerator.ClearHighlights(allowedMoves);
@@ -64,24 +63,18 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        if (previouslySelected != null && allowedMoves.Contains(pos))
-        {
-            PerformMove(pos, allowedMoves, previouslySelected);
-            DeselectPiece();
-        }
+        DeselectPiece();
     }
+
 
     void SelectPiece(PieceBase nowSelected)
     {
         previouslySelected = nowSelected;
-        Debug.Log($"{nowSelected} is now selected");
     }
 
     void DeselectPiece()
     {
-        previouslySelected = null;
-        Debug.Log($"Piece deselected");
-
+        previouslySelected = default;
         tileGenerator.ClearHighlights(allowedMoves);
     }
 
@@ -100,7 +93,6 @@ public class GameManager : MonoBehaviour
             board.MovePiece(piece.Position, targetPiecePos);
             if (boardVisuals.pieceToVisualPiece.TryGetValue(piece.PieceId, out var visualPieceId))
             {
-                Debug.Log($"Found visual for PieceId {piece.PieceId}: {visualPieceId}");
                 PieceVisualItem visual = FindObjectsOfType<PieceVisualItem>()
                     .FirstOrDefault(v => v.pieceVisualId == visualPieceId);
                 visual.transform.position = new Vector3(targetPiecePos.x, targetPiecePos.y, 0);
@@ -114,16 +106,10 @@ public class GameManager : MonoBehaviour
         }
 
 
-        Debug.Log(
-            $"Piece is moving from {piece.Position.x},{piece.Position.y} to {targetPiecePos.x},{targetPiecePos.y}");
         piece.Position = targetPiecePos;
-        Debug.Log($"Piece is now located at {piece.Position.x},  {piece.Position.y}");
-
-
         if (!allowedMoves.Contains(targetPiecePos))
-        {
-            Debug.Log($"Target position {targetPiecePos.x},{targetPiecePos.y} is invalid");
+        
             board.wasMoveSuccessful = false;
-        }
+        
     }
 }

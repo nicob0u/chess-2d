@@ -1,16 +1,14 @@
 using System.Collections.Generic;
+using Core.Pieces;
 using UnityEngine;
+using UnityEngine.UIElements;
 
-public class KingPiece : PieceBase
+public class KingPiece : ILogic
 {
-    public KingPiece(PieceColor color) : base(color)
+    public List<Vector2Int> GetMoves(Dictionary<Vector2Int, PieceBase> pieces, Board board, PieceBase piece)
     {
-    }
-
-    public override List<Vector2Int> GetMoves(Dictionary<Vector2Int, PieceBase> pieces)
-    {
-        int y = Position.y;
-        int x = Position.x;
+        int y = piece.Position.y;
+        int x = piece.Position.x;
         var moves = new List<Vector2Int>();
 
         for (int i = x - 1; i < x + 2; i++)
@@ -19,8 +17,8 @@ public class KingPiece : PieceBase
             {
                 Vector2Int movePos = new Vector2Int(i, j);
                 if (i < 0 || i > 7 || j < 0 || j > 7) continue;
-                if (!IsEmpty(pieces, movePos))
-                    if (pieces[movePos] is KingPiece || pieces[movePos].Color == Color)
+                if (!board.IsEmpty(pieces, movePos))
+                    if (pieces[movePos].Color == piece.Color)
                         continue;
                 moves.Add(new Vector2Int(i, j));
             }

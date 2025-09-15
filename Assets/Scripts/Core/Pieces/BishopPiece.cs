@@ -1,16 +1,14 @@
 using System.Collections.Generic;
+using Core.Pieces;
+using Newtonsoft.Json;
 using UnityEngine;
 
-public class BishopPiece : PieceBase
+public class BishopPiece : ILogic
 {
-    public BishopPiece(PieceColor color) : base(color)
+    public List<Vector2Int> GetMoves(Dictionary<Vector2Int, PieceBase> pieces, Board board, PieceBase piece)
     {
-    }
-
-    public override List<Vector2Int> GetMoves(Dictionary<Vector2Int, PieceBase> pieces)
-    {
-        int y = Position.y;
-        int x = Position.x;
+        int y = piece.Position.y;
+        int x = piece.Position.x;
         Vector2Int movePos;
         var moves = new List<Vector2Int>();
 
@@ -22,10 +20,10 @@ public class BishopPiece : PieceBase
         {
             movePos = new Vector2Int(i, j);
 
-            if (!IsEmpty(pieces, movePos))
+            if (!board.IsEmpty(pieces, movePos))
             {
-                if (pieces[movePos].Color == Color || pieces[movePos] is KingPiece) break;
-                if (pieces[movePos].Color != Color)
+                if (pieces[movePos].Color == piece.Color || (pieces[movePos].GetLogicType() == typeof(KingPiece))) break;
+                if (pieces[movePos].Color != piece.Color)
                 {
                     moves.Add(movePos);
                     break;
@@ -44,16 +42,16 @@ public class BishopPiece : PieceBase
         {
             movePos = new Vector2Int(i, j);
 
-            if (!IsEmpty(pieces, movePos))
+            if (!board.IsEmpty(pieces, movePos))
             {
-                if (pieces[movePos].Color == Color || pieces[movePos] is KingPiece) break;
-                if (pieces[movePos].Color != Color)
+                if (pieces[movePos].Color == piece.Color || (pieces[movePos].GetLogicType() == typeof(KingPiece))) break;
+                if (pieces[movePos].Color != piece.Color)
                 {
                     moves.Add(movePos);
                     break;
                 }
             }
-
+            
             moves.Add(movePos);
             i++;
             j--;
@@ -66,10 +64,10 @@ public class BishopPiece : PieceBase
         {
             movePos = new Vector2Int(i, j);
 
-            if (!IsEmpty(pieces, movePos))
+            if (!board.IsEmpty(pieces, movePos))
             {
-                if (pieces[movePos].Color == Color || pieces[movePos] is KingPiece) break;
-                if (pieces[movePos].Color != Color)
+                if (pieces[movePos].Color == piece.Color || (pieces[movePos].GetLogicType() == typeof(KingPiece))) break;
+                if (pieces[movePos].Color != piece.Color)
                 {
                     moves.Add(movePos);
                     break;
@@ -88,10 +86,10 @@ public class BishopPiece : PieceBase
         {
             movePos = new Vector2Int(i, j);
 
-            if (!IsEmpty(pieces, movePos))
+            if (!board.IsEmpty(pieces, movePos))
             {
-                if (pieces[movePos].Color == Color || pieces[movePos] is KingPiece) break;
-                if (pieces[movePos].Color != Color)
+                if (pieces[movePos].Color == piece.Color) break;
+                if (pieces[movePos].Color != piece.Color)
                 {
                     moves.Add(movePos);
                     break;
@@ -102,6 +100,9 @@ public class BishopPiece : PieceBase
             i--;
             j--;
         }
+        
+        
+        
 
         return moves;
     }
