@@ -22,7 +22,7 @@ public class BishopPiece : ILogic
 
             if (!board.IsEmpty(pieces, movePos))
             {
-                if (pieces[movePos].Color == piece.Color || (pieces[movePos].GetLogicType() == typeof(KingPiece))) break;
+                if (pieces[movePos].Color == piece.Color) break;
                 if (pieces[movePos].Color != piece.Color)
                 {
                     moves.Add(movePos);
@@ -44,7 +44,7 @@ public class BishopPiece : ILogic
 
             if (!board.IsEmpty(pieces, movePos))
             {
-                if (pieces[movePos].Color == piece.Color || (pieces[movePos].GetLogicType() == typeof(KingPiece))) break;
+                if (pieces[movePos].Color == piece.Color) break;
                 if (pieces[movePos].Color != piece.Color)
                 {
                     moves.Add(movePos);
@@ -66,7 +66,7 @@ public class BishopPiece : ILogic
 
             if (!board.IsEmpty(pieces, movePos))
             {
-                if (pieces[movePos].Color == piece.Color || (pieces[movePos].GetLogicType() == typeof(KingPiece))) break;
+                if (pieces[movePos].Color == piece.Color) break;
                 if (pieces[movePos].Color != piece.Color)
                 {
                     moves.Add(movePos);
